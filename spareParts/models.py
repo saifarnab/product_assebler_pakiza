@@ -28,6 +28,20 @@ class Purchase(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
+class Product(models.Model):
+    product_id = models.BigAutoField(primary_key=True)
+    product_no = models.BigIntegerField(null=False, blank=False)
+    parts_id = models.BigIntegerField(null=False, blank=False)
+    parts_name = models.CharField(max_length=288, blank=False, null=False)
+    quantity = models.IntegerField(null=False, blank=False)
+    barcode = models.CharField(max_length=288, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+
+
 # class Product(models.Model):
 #     product_id = models.BigAutoField(primary_key=True)
 #     ram = models.BigIntegerField(null=True, blank=True)

@@ -2,9 +2,10 @@ from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import SparePart, Unit, Purchase
+from .models import SparePart, Unit, Purchase, Product
 from django.urls import reverse
 from django.contrib.auth import logout
+from django.db.models import Max
 
 
 def login(request):
@@ -161,7 +162,67 @@ def get_unit_stock(request):
     return HttpResponse(data)
 
 
+def product(request):
+    if 'user' not in request.session:
+        return redirect('login')
+    args = Product.objects.filter()
+    maxProductNo = args.aggregate(Max('product_no')).get('product_no__max')
+    if maxProductNo is None:
+        maxProductNo = 1
+    linked_content = []
+    for i in range(maxProductNo):
+        if Product.objects.filter(product_no=i+1).exists():
+            product = list(Product.objects.filter(product_no=i+1).values_list("parts_name", "quantity", "barcode"))
+            custom_dict = {
+                'product_no': i+1,
+                'parts': product
+            }
+            linked_content.append(custom_dict)
+    print(linked_content)
+    return render(request, 'product.html', {'data': linked_content, 'user': request.session['user']})
 
+
+def create_product(request):
+    if 'user' not in request.session:
+        return redirect('login')
+    linked_content = []
+    parts = SparePart.objects.all()
+    for content in parts:
+        linked_content.append(content.__dict__)
+
+    if request.method == "POST":
+        print('hit')
+        try:
+            val = int(request.POST.get('total', ''))
+            count = 1
+            check = 0
+            args = Product.objects.filter()
+            maxProductNo = args.aggregate(Max('product_no')).get('product_no__max')
+            if maxProductNo is None:
+                maxProductNo = 0
+            print('maxProductNo: ', maxProductNo)
+            while (1):
+                parts_text = request.POST.get('partstext_' + str(count), '')
+                parts_id = request.POST.get('partsid_' + str(count), '')
+                quantity = request.POST.get('quantity_' + str(count), '')
+                if parts_text != '' and parts_id != '' and quantity != '':
+                    parts_id = int(parts_id)
+                    quantity = int(quantity)
+                    qry = SparePart.objects.filter(parts_id=parts_id).values_list('quantity')
+                    qry_list = list(qry)
+                    current_quantity = qry_list[0][0]
+                    if current_quantity is None:
+                        current_quantity = 1
+                    if quantity > current_quantity:
+                        return render(request, 'create_product.html', {'data': linked_content, 'user': request.session['user']})
+                    Product.objects.create(product_no=maxProductNo+1, parts_name=parts_text, parts_id=parts_id, quantity=quantity)
+                    check += 1
+                count += 1
+                if check == val:
+                    break
+        except:
+            return redirect(create_product)
+    return render(request, 'create_product.html', {'data': linked_content, 'user': request.session['user']})
 # def add_product(request):
 #     if 'user' not in request.session:
 #         return redirect('login')
