@@ -142,14 +142,24 @@
                                         <thead>
                                             <tr>
                                                 <th>Product No</th>
+                                                <th>Product Name</th>
                                                 <th>Parts List</th>
+                                                <th>Product Barcode</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         {% for element in data %}
                                             <tr>
                                                 <th>{{element.product_no}}</th>
-                                                <th>{{element.parts}}</th>
+                                                <th>{{element.product_name}}</th>
+                                                <th>
+                                                    <ul>
+                                                        {% for item in element.parts_list %}
+                                                        <li>{{ item.parts_name }} - {{ item.quantity }} {{ item.unit }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </th>
+                                                <th>{{element.barcode}}</th>
                                             </tr>
                                         {% endfor %}
                                         </tbody>

@@ -23,7 +23,7 @@ class PurchaseAdmin(admin.ModelAdmin):
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = [
-        'product_id', 'product_no', 'parts_id', 'parts_name', 'quantity', 'created_at', 'updated_at'
+        'product_id', 'product_no', 'product_name', 'parts_id', 'parts_name', 'parts_unit', 'quantity', 'created_at', 'updated_at'
     ]
 
 # class ProductAdmin(admin.ModelAdmin):

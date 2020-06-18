@@ -92,13 +92,36 @@
                     <div class="col-12">
                         <div class="col-md-12">
                         <h4 class="card-title">Create Product:</h4>
+
                         <div class="card">
                             <form class="form-horizontal">
                                  {% csrf_token %}
+                                <div class="card-body" style="padding: .5rem; margin-bottom: -35px;">
+                                    <div class="form-group row">
+                                        <h3 style="font-weight: bold;"  class="col-sm-3 text-right control-label col-form-label" disabled>Product Information:</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label for="name" class="col-sm-3 text-right control-label col-form-label" disabled>Product Name</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input type="text" name="name" class="form-control" id="name" placeholder="Product Name Here">
+                                        </div>
+                                        <label for="barcode" class="col-sm-3 text-right control-label col-form-label" disabled>Barcode</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input type="text" name="barcode" class="form-control" id="barcode" placeholder="Product Barcode Here">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body" style="padding: .5rem; margin-bottom: -30px; margin-top: -35px;">
+                                    <div class="form-group row">
+                                        <h3 style="font-weight: bold;"  class="col-sm-3 text-right control-label col-form-label" disabled>Add Spare Parts:</h3>
+                                    </div>
+                                </div>
                                 <div class="card-body">
                                     <div class="form-group row">
 
-                                        <label  class="col-sm-3 text-right control-label col-form-label">Spare Parts Name</label>
+                                        <label class="col-sm-3 text-right control-label col-form-label">Spare Parts Name</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
                                             <select name="parts" id="parts" onchange="partsValue()" class="form-control">
                                                 <option value="-1">------</option>
@@ -119,10 +142,6 @@
                                         <div class="col-sm-9" style="margin-bottom: 15px">
                                             <input type="number" name="quantity" class="form-control" id="quantity" placeholder="Product Quantity Here">
                                         </div>
-                                        <label for="barcode" class="col-sm-3 text-right control-label col-form-label" disabled>Barcode</label>
-                                        <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="text" name="barcode" class="form-control" id="barcode" placeholder="Product Barcode Here">
-                                        </div>
                                         <div class="col-sm-3"></div>
                                         <div class="col-sm-3">
                                             <p style="color:red">{{ message }}</p>
@@ -141,10 +160,9 @@
                               <thead>
                                 <tr>
                                   <th scope="col">#</th>
-                                  <th scope="col">Name</th>
+                                    <th scope="col">Name</th>
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Unit</th>
-                                    <th scope="col">Barcode</th>
                                     <th scope="col">Action</th>
                                 </tr>
                               </thead>
@@ -198,7 +216,7 @@
       document.getElementById("total").value = table.rows.length-1;
     }
     function addPurchase() {
-
+      var name = document.getElementById("name").value;
       var unit = document.getElementById("unit").value;
       var quantity = document.getElementById("quantity").value;
       var parts = document.getElementById("parts");
@@ -215,14 +233,11 @@
       var cell3 = row.insertCell(2);
       var cell4 = row.insertCell(3);
       var cell5 = row.insertCell(4);
-      var cell6 = row.insertCell(5);
       cell1.innerHTML = table_len;
       cell2.innerHTML = "<input type='hidden' name=partstext_" + table_len + " value=" + parts_text + "><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='hidden' name=partsid_" + table_len + " value=" + parts_id + " >" + parts_text;
-      cell3.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=quantity_" + table_len + " value=" + quantity + " >";
-      cell4.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=total_" + table.rows.length + " value=" + unit + " >";;
-      cell5.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=barcode_" + table.rows.length + " value=" + barcode + " >";;
-      cell6.innerHTML = "<button class='btn btn-sm btn-danger' value='Delete' onclick='deleteRow(this)'>Delete</button>";
-
+      cell3.innerHTML = "<input type='hidden' name=name_" + table_len + " value=" + name + "><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=quantity_" + table_len + " value=" + quantity + " >";
+      cell4.innerHTML = "<input type='hidden' name=barcode_" + table_len + " value=" + barcode + "><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=unit_" + table_len + " value=" + unit + " >";
+      cell5.innerHTML = "<button class='btn btn-sm btn-danger' value='Delete' onclick='deleteRow(this)'>Delete</button>";
     }
 
 

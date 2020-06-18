@@ -172,12 +172,23 @@ def product(request):
     linked_content = []
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i+1).exists():
-            product = list(Product.objects.filter(product_no=i+1).values_list("parts_name", "quantity", "barcode"))
+            product = list(Product.objects.filter(product_no=i+1).values_list("product_name", "barcode", "parts_name", "quantity", "parts_unit" ))
+            parts = []
+            for item in range(len(product)):
+                thisdict = {
+                    'parts_name': product[item][2],
+                    'quantity': product[item][3],
+                    'unit': product[item][4]
+                }
+                parts.append(thisdict)
             custom_dict = {
-                'product_no': i+1,
-                'parts': product
+                'product_no': i + 1,
+                'product_name': product[0][0],
+                'barcode': product[0][1],
+                'parts_list': parts,
             }
             linked_content.append(custom_dict)
+
     print(linked_content)
     return render(request, 'product.html', {'data': linked_content, 'user': request.session['user']})
 
@@ -200,11 +211,14 @@ def create_product(request):
             maxProductNo = args.aggregate(Max('product_no')).get('product_no__max')
             if maxProductNo is None:
                 maxProductNo = 0
-            print('maxProductNo: ', maxProductNo)
             while (1):
+                name = request.POST.get('name_' + str(count), '')
+                unit = request.POST.get('unit_' + str(count), '')
+                barcode = request.POST.get('barcode_' + str(count), '')
                 parts_text = request.POST.get('partstext_' + str(count), '')
                 parts_id = request.POST.get('partsid_' + str(count), '')
                 quantity = request.POST.get('quantity_' + str(count), '')
+                print('asdasda', unit)
                 if parts_text != '' and parts_id != '' and quantity != '':
                     parts_id = int(parts_id)
                     quantity = int(quantity)
@@ -215,7 +229,8 @@ def create_product(request):
                         current_quantity = 1
                     if quantity > current_quantity:
                         return render(request, 'create_product.html', {'data': linked_content, 'user': request.session['user']})
-                    Product.objects.create(product_no=maxProductNo+1, parts_name=parts_text, parts_id=parts_id, quantity=quantity)
+                    print(maxProductNo, name, barcode, parts_text, parts_id, quantity)
+                    Product.objects.create(product_no=maxProductNo+1, parts_unit=unit, product_name=name, barcode=barcode, parts_name=parts_text, parts_id=parts_id, quantity=quantity)
                     check += 1
                 count += 1
                 if check == val:

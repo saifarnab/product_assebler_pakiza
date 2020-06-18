@@ -32,8 +32,10 @@ class Purchase(models.Model):
 class Product(models.Model):
     product_id = models.BigAutoField(primary_key=True)
     product_no = models.BigIntegerField(null=False, blank=False)
+    product_name = models.CharField(max_length=288, blank=False, null=False)
     parts_id = models.BigIntegerField(null=False, blank=False)
     parts_name = models.CharField(max_length=288, blank=False, null=False)
+    parts_unit = models.CharField(max_length=288, blank=False, null=False)
     quantity = models.IntegerField(null=False, blank=False)
     barcode = models.CharField(max_length=288, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
