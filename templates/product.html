@@ -126,8 +126,6 @@
             </div>
         </aside>
 
-
-
         <div class="page-wrapper">
             <div class="container-fluid">
                 <a href="{% url 'createproduct' %}" style="margin-bottom: 15px; color:white;" class="btn btn-dark">Create Product</a>
@@ -164,9 +162,11 @@
                                         {% endfor %}
                                         </tbody>
                                         <tfoot>
-                                            <tr>
+                                           <tr>
                                                 <th>Product No</th>
+                                                <th>Product Name</th>
                                                 <th>Parts List</th>
+                                                <th>Product Barcode</th>
                                             </tr>
                                         </tfoot>
                                     </table>

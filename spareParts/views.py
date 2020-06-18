@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -117,6 +119,10 @@ def purchase_parts(request):
                 challan = request.POST.get('challan_' + str(count), '')
                 parts_id = request.POST.get('partsid_' + str(count), '')
                 quantity = request.POST.get('quantity_' + str(count), '')
+                box = request.POST.get('box_' + str(count), '')
+                print('box', box)
+                date = request.POST.get('date_' + str(count), '')
+                date = datetime.strptime(date[2:], '%y-%m-%d').date()
                 if supplier != '' and challan != '' and parts_id != '' and quantity != '':
                     parts_id = int(parts_id)
                     quantity = int(quantity)
@@ -129,20 +135,20 @@ def purchase_parts(request):
                     SparePart.objects.filter(parts_id=parts_id).update(quantity=total_quantity)
                     try:
                         print(supplier, challan, parts_id, quantity)
-                        Purchase.objects.create(supplier=supplier, challan_no=challan, parts_id=parts_id, quantity=quantity)
-                        print('98456156156465456156')
+                        Purchase.objects.create(supplier=supplier, challan_no=challan, parts_id=parts_id, quantity=quantity, box=box, created_at=date)
                     except:
                         print('error creating purchase')
-                    print('conme herer')
                     check += 1
-                    print('check', check)
                 count += 1
                 if check == val:
                     break
+                if count > 50:
+                    break
+                break
         except:
+            print('error in val')
             return redirect(purchase_parts)
         while True:
-            print('hello')
             break
         print(val)
     return render(request, 'purchase_spare_parts.html', {'data': linked_content, 'user': request.session['user']})
@@ -153,12 +159,13 @@ def get_unit_stock(request):
     if data < 1:
         data = 'Spare Part Unit Here' + ', ' + 'Spare Part Available Stock Here'
         return HttpResponse(data)
-    qry = SparePart.objects.filter(parts_id=data).values_list('quantity', 'unit', )
+    qry = SparePart.objects.filter(parts_id=data).values_list('quantity', 'unit', 'name', )
     qry_list = list(qry)
     stock = str(qry_list[0][0])
     if qry_list[0][0] is None:
         stock = 0
-    data = str(qry_list[0][1]) + ', ' + str(stock)
+    data = str(qry_list[0][1]) + ', ' + str(stock) + ', ' + str(qry_list[0][2])
+    print(data)
     return HttpResponse(data)
 
 
@@ -215,11 +222,11 @@ def create_product(request):
                 name = request.POST.get('name_' + str(count), '')
                 unit = request.POST.get('unit_' + str(count), '')
                 barcode = request.POST.get('barcode_' + str(count), '')
-                parts_text = request.POST.get('partstext_' + str(count), '')
+                partsname = request.POST.get('partsname_' + str(count), '')
                 parts_id = request.POST.get('partsid_' + str(count), '')
                 quantity = request.POST.get('quantity_' + str(count), '')
-                print('asdasda', unit)
-                if parts_text != '' and parts_id != '' and quantity != '':
+                print(partsname, parts_id, quantity)
+                if partsname != '' and parts_id != '' and quantity != '':
                     parts_id = int(parts_id)
                     quantity = int(quantity)
                     qry = SparePart.objects.filter(parts_id=parts_id).values_list('quantity')
@@ -229,12 +236,12 @@ def create_product(request):
                         current_quantity = 1
                     if quantity > current_quantity:
                         return render(request, 'create_product.html', {'data': linked_content, 'user': request.session['user']})
-                    print(maxProductNo, name, barcode, parts_text, parts_id, quantity)
-                    Product.objects.create(product_no=maxProductNo+1, parts_unit=unit, product_name=name, barcode=barcode, parts_name=parts_text, parts_id=parts_id, quantity=quantity)
+                    print(maxProductNo, name, barcode, partsname, parts_id, quantity)
+                    Product.objects.create(product_no=maxProductNo+1, parts_unit=unit, product_name=name, barcode=barcode, parts_name=partsname, parts_id=parts_id, quantity=quantity)
                     check += 1
                 count += 1
                 if check == val:
-                    break
+                    return redirect(product)
         except:
             return redirect(create_product)
     return render(request, 'create_product.html', {'data': linked_content, 'user': request.session['user']})

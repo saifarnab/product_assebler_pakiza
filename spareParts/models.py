@@ -21,11 +21,11 @@ class SparePart(models.Model):
 class Purchase(models.Model):
     purchase_id = models.BigAutoField(primary_key=True)
     challan_no = models.CharField(max_length=288, blank=False, null=False)
-    challan_date = models.DateTimeField(auto_now_add=True)
     supplier = models.CharField(max_length=288, blank=False, null=False)
     parts_id = models.BigIntegerField(null=False, blank=False)
     quantity = models.BigIntegerField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    box = models.BigIntegerField(null=True, blank=True)
+    created_at = models.DateTimeField()
     updated_at = models.DateTimeField(auto_now=True)
 
 

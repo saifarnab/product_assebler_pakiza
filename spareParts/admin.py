@@ -17,7 +17,7 @@ class UnitAdmin(admin.ModelAdmin):
 
 class PurchaseAdmin(admin.ModelAdmin):
     list_display = [
-        'purchase_id', 'challan_no', 'challan_date', 'supplier',  'parts_id', 'quantity', 'created_at', 'updated_at'
+        'purchase_id', 'challan_no', 'supplier',  'parts_id', 'quantity', 'box', 'created_at', 'updated_at'
     ]
 
 

@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'assets/extra-libs/multicheck/multicheck.css' %}">
     <link href="{% static 'assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css' %}" rel="stylesheet">
     <link href="{% static 'dist/css/style.min.css' %}" rel="stylesheet">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -95,18 +96,36 @@
                         <div class="card">
                             <form class="form-horizontal" method="post" action="{% url 'addspareparts' %}">
                                  {% csrf_token %}
+                                <div class="card-body" style="padding: .5rem; margin-bottom: -35px;">
+                                    <div class="form-group row">
+                                        <h3 style="font-weight: bold;"  class="col-sm-3 text-right control-label col-form-label" disabled>Store and Invoice Information:</h3>
+                                    </div>
+                                </div>
                                 <div class="card-body">
                                     <div class="form-group row">
 
-                                        <label for="supplier" class="col-sm-3 text-right control-label col-form-label">Supplier Name</label>
+                                        <label for="supplier" class="col-sm-3 text-right control-label col-form-label">Store Name</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="text" name="name" class="form-control" id="supplier" placeholder="Supplier Name Here">
+                                            <input type="text" name="supplier" class="form-control" id="supplier" placeholder="Store Name Here">
                                         </div>
 
-                                        <label for="challan" class="col-sm-3 text-right control-label col-form-label">Challan No</label>
+                                        <label for="challan" class="col-sm-3 text-right control-label col-form-label">Invoice No</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="text" name="name" class="form-control" id="challan" placeholder="Challan No Here">
+                                            <input type="text" name="name" class="form-control" id="challan" placeholder="Invoice No Here">
                                         </div>
+                                        <label for="date" class="col-sm-3 text-right control-label col-form-label" disabled>Invoice Date</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input class="form-control" type="date" id="date" name="date">
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="card-body" style="padding: .5rem; margin-bottom: -35px; margin-top: -35px;">
+                                    <div class="form-group row">
+                                        <h3 style="font-weight: bold;"  class="col-sm-3 text-right control-label col-form-label" disabled>Spare Parts Information:</h3>
+                                    </div>
+                                </div>
+                                        <div class="card-body">
+                                    <div class="form-group row">
 
                                         <label  class="col-sm-3 text-right control-label col-form-label">Name</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
@@ -119,16 +138,21 @@
                                         </div>
                                         <label for="unit" class="col-sm-3 text-right control-label col-form-label">Unit</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="text" name="unit" class="form-control" id="unit" placeholder="Spare Part Unit Here" disabled>
+                                            <input type="text" name="unit" class="form-control" id="unit" placeholder="Unit Here" disabled>
                                         </div>
-                                        <label for="stock" class="col-sm-3 text-right control-label col-form-label" disabled>Available Stock</label>
-                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                        <label style="display:none" for="stock" class="col-sm-3 text-right control-label col-form-label" disabled>Available Stock</label>
+                                        <div style="display:none" class="col-sm-9" style="margin-bottom: 15px">
                                             <input type="text" name="stock" class="form-control" id="stock" placeholder="Available Stock Here" disabled>
                                         </div>
-                                        <label for="quantity" class="col-sm-3 text-right control-label col-form-label" disabled>Purchase Quantity</label>
+                                        <label for="quantity" class="col-sm-3 text-right control-label col-form-label" disabled>Quantity</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="text" name="quantity" class="form-control" id="quantity" placeholder="Purchase Quantity Here">
+                                            <input type="text" name="quantity" class="form-control" id="quantity" placeholder="Quantity Here">
                                         </div>
+                                        <label for="box" class="col-sm-3 text-right control-label col-form-label" disabled>Box</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input type="text" name="box" class="form-control" id="box" placeholder="Box Here">
+                                        </div>
+
                                         <div class="col-sm-3"></div>
                                         <div class="col-sm-3">
                                             <p style="color:red">{{ message }}</p>
@@ -147,11 +171,13 @@
                               <thead>
                                 <tr>
                                   <th scope="col">#</th>
-                                  <th scope="col">Supplier Name</th>
-                                  <th scope="col">Challan No</th>
+                                  <th scope="col">Store Name</th>
+                                  <th scope="col">Invoice No</th>
                                   <th scope="col">Spare Parts Name</th>
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Unit</th>
+                                    <th scope="col">Box</th>
+                                    <th scope="col">Date</th>
                                     <th scope="col">Action</th>
                                 </tr>
                               </thead>
@@ -188,7 +214,11 @@
     <script src="{% static 'assets/extra-libs/multicheck/jquery.multicheck.js' %}"></script>
     <script src="{% static 'assets/extra-libs/DataTables/datatables.min.js' %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-
+      <script>
+      $( function() {
+        $( "#datepicker" ).datepicker();
+      } );
+    </script>
     <script>
     console.log('hit');
         /****************************************
@@ -214,6 +244,9 @@
       var parts = document.getElementById("parts");
       var parts_text = parts.options[parts.selectedIndex].text;
       var parts_id = parts.options[parts.selectedIndex].value;
+      var box = document.getElementById("box").value;
+      var date = document.getElementById("date").value;
+      console.log(date);
 
       var table = document.getElementById("purchaseTable");
       var table_len = table.rows.length;
@@ -227,18 +260,18 @@
       var cell5 = row.insertCell(4);
       var cell6 = row.insertCell(5);
       var cell7 = row.insertCell(6);
+      var cell8 = row.insertCell(7);
+      var cell9 = row.insertCell(8);
       cell1.innerHTML = table_len;
-      cell2.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=supplier_" + table_len + " value=" + supplier + " >";
+      cell2.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=supplier_" + table_len + " value='" + supplier + "' >";
       cell3.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=challan_" + table_len + " value=" + challan + " >";
       cell4.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='hidden' name=partsid_" + table_len + " value=" + parts_id + " >" + parts_text;
-      cell5.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=quantity_" + table_len + " value=" + quantity + " >";
+      cell5.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='number' name=quantity_" + table_len + " value=" + quantity + " >";
       cell6.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=total_" + table.rows.length + " value=" + unit + " >";;
-      cell7.innerHTML = "<button class='btn btn-sm btn-danger' value='Delete' onclick='deleteRow(this)'>Delete</button>";
-
+      cell7.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='number' name=box_" + table_len + " value=" + box + " >";;
+      cell8.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=date_" + table_len + " value=" + date + " >";;
+      cell9.innerHTML = "<button class='btn btn-sm btn-danger' value='Delete' onclick='deleteRow(this)'>Delete</button>";
     }
-
-
-
     function partsValue() {
       var x = document.getElementById("parts").value;
       console.log(x);

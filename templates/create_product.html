@@ -103,7 +103,19 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="form-group row">
-                                        <label for="name" class="col-sm-3 text-right control-label col-form-label" disabled>Product Name</label>
+                                        <label for="date" class="col-sm-3 text-right control-label col-form-label" disabled>Date</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input class="form-control" type="date" id="date" name="date">
+                                        </div>
+                                        <label for="invoice" class="col-sm-3 text-right control-label col-form-label" disabled>Invoice No.</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input class="form-control" type="text" id="invoice" name="invoice" placeholder="Invoice No. Here">
+                                        </div>
+                                        <label for="id" class="col-sm-3 text-right control-label col-form-label" disabled>ID</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input type="text" name="id" class="form-control" id="id" placeholder="Product ID Here">
+                                        </div>
+                                        <label for="name" class="col-sm-3 text-right control-label col-form-label" disabled>Name</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
                                             <input type="text" name="name" class="form-control" id="name" placeholder="Product Name Here">
                                         </div>
@@ -111,6 +123,15 @@
                                         <div class="col-sm-9" style="margin-bottom: 15px">
                                             <input type="text" name="barcode" class="form-control" id="barcode" placeholder="Product Barcode Here">
                                         </div>
+                                        <label for="store" class="col-sm-3 text-right control-label col-form-label" disabled>Store</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input type="text" name="store" class="form-control" id="store" placeholder="Store Here">
+                                        </div>
+                                        <label for="comment" class="col-sm-3 text-right control-label col-form-label" disabled>Comment</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <textarea name="comment" class="form-control" id="comment" placeholder="Comments Here"></textarea>
+                                        </div>
+
                                     </div>
                                 </div>
                                 <div class="card-body" style="padding: .5rem; margin-bottom: -30px; margin-top: -35px;">
@@ -121,26 +142,31 @@
                                 <div class="card-body">
                                     <div class="form-group row">
 
-                                        <label class="col-sm-3 text-right control-label col-form-label">Spare Parts Name</label>
+                                        <label class="col-sm-3 text-right control-label col-form-label">ID</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
                                             <select name="parts" id="parts" onchange="partsValue()" class="form-control">
                                                 <option value="-1">------</option>
                                                 {% for item in data %}
-                                                    <option value={{item.parts_id}}>{{item.name}}</option>
+                                                    <option value={{item.parts_id}}>{{item.parts_id}}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
+                                        <label for="parts_name" class="col-sm-3 text-right control-label col-form-label" disabled>Name</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input type="text" name="parts_name" class="form-control" id="parts_name" placeholder="Spare Parts Name Here" disabled>
+                                        </div>
                                         <label for="unit" class="col-sm-3 text-right control-label col-form-label">Unit</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="text" name="unit" class="form-control" id="unit" placeholder="Spare Part Unit Here" disabled>
+                                            <input type="text" name="unit" class="form-control" id="unit" placeholder="Spare Parts Unit Here" disabled>
                                         </div>
-                                        <label for="stock" class="col-sm-3 text-right control-label col-form-label" disabled>Available Stock</label>
+
+                                        <label for="box" class="col-sm-3 text-right control-label col-form-label" disabled>Box</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="text" name="stock" class="form-control" id="stock" placeholder="Available Stock Here" disabled>
+                                            <input type="number" name="box" class="form-control" id="box" placeholder="Box Here">
                                         </div>
                                         <label for="quantity" class="col-sm-3 text-right control-label col-form-label" disabled>Quantity</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="number" name="quantity" class="form-control" id="quantity" placeholder="Product Quantity Here">
+                                            <input type="number" name="quantity" class="form-control" id="quantity" placeholder="Quantity Here">
                                         </div>
                                         <div class="col-sm-3"></div>
                                         <div class="col-sm-3">
@@ -160,7 +186,9 @@
                               <thead>
                                 <tr>
                                   <th scope="col">#</th>
-                                    <th scope="col">Name</th>
+                                    <th scope="col">Parts ID</th>
+                                    <th scope="col">Parts Name</th>
+                                    <th scope="col">Box</th>
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Unit</th>
                                     <th scope="col">Action</th>
@@ -212,12 +240,14 @@
       row.parentNode.removeChild(row);
       var table = document.getElementById("purchaseTable");
       var table_len = table.rows.length;
-      console.log(table_len)
       document.getElementById("total").value = table.rows.length-1;
     }
     function addPurchase() {
       var name = document.getElementById("name").value;
+      console.log(parts_name);
+      var parts_name = document.getElementById("parts_name").value;
       var unit = document.getElementById("unit").value;
+      var box = document.getElementById("box").value;
       var quantity = document.getElementById("quantity").value;
       var parts = document.getElementById("parts");
       var parts_text = parts.options[parts.selectedIndex].text;
@@ -225,19 +255,25 @@
       var barcode = document.getElementById("barcode").value;
       var table = document.getElementById("purchaseTable");
       var table_len = table.rows.length;
-      console.log(table_len, quantity, parts_text, parts_id, barcode)
+      console.log(name, quantity, parts_text, parts_id, barcode);
       document.getElementById("total").value = table.rows.length;
       var row = table.insertRow(table_len);
+      console.log("<input type='hidden' name=name_" + table_len + " value="+name+"><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=quantity_" + table_len + " value=" + quantity + " >");
       var cell1 = row.insertCell(0);
       var cell2 = row.insertCell(1);
       var cell3 = row.insertCell(2);
       var cell4 = row.insertCell(3);
       var cell5 = row.insertCell(4);
+      var cell6 = row.insertCell(5);
+      var cell7 = row.insertCell(6);
+      var cell8 = row.insertCell(7);
       cell1.innerHTML = table_len;
-      cell2.innerHTML = "<input type='hidden' name=partstext_" + table_len + " value=" + parts_text + "><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='hidden' name=partsid_" + table_len + " value=" + parts_id + " >" + parts_text;
-      cell3.innerHTML = "<input type='hidden' name=name_" + table_len + " value=" + name + "><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=quantity_" + table_len + " value=" + quantity + " >";
-      cell4.innerHTML = "<input type='hidden' name=barcode_" + table_len + " value=" + barcode + "><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=unit_" + table_len + " value=" + unit + " >";
-      cell5.innerHTML = "<button class='btn btn-sm btn-danger' value='Delete' onclick='deleteRow(this)'>Delete</button>";
+      cell2.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=partsid_" + table_len + " value=" + parts_id + ">";
+      cell3.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=partsname_" + table_len + " value=" + parts_name + " >";
+      cell4.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=box_" + table_len + " value=" + box + " >";
+      cell5.innerHTML = "<input type='hidden' name=name_" + table_len + " value='"+name+"'><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=quantity_" + table_len + " value=" + quantity + " >";
+      cell6.innerHTML = "<input type='hidden' name=barcode_" + table_len + " value=" + barcode + "><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=unit_" + table_len + " value=" + unit + " >";
+      cell7.innerHTML = "<button class='btn btn-sm btn-danger' value='Delete' onclick='deleteRow(this)'>Delete</button>";
     }
 
 
@@ -256,7 +292,8 @@
         {
             var res = data.split(",");
             document.getElementById("unit").value = res[0];
-            document.getElementById("stock").value = res[1];
+            document.getElementById("parts_name").value = res[2];
+            console.log(res)
         }
      })
     }
