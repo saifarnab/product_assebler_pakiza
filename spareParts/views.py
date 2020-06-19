@@ -179,7 +179,7 @@ def product(request):
     linked_content = []
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i+1).exists():
-            product = list(Product.objects.filter(product_no=i+1).values_list("product_name", "barcode", "parts_name", "quantity", "parts_unit" ))
+            product = list(Product.objects.filter(product_no=i+1).values_list("product_name", "product_barcode", "parts_name", "parts_quantity", "parts_unit" ))
             parts = []
             for item in range(len(product)):
                 thisdict = {
@@ -207,25 +207,34 @@ def create_product(request):
     parts = SparePart.objects.all()
     for content in parts:
         linked_content.append(content.__dict__)
-
     if request.method == "POST":
-        print('hit')
+
         try:
             val = int(request.POST.get('total', ''))
+            print('hit create product')
             count = 1
             check = 0
-            args = Product.objects.filter()
-            maxProductNo = args.aggregate(Max('product_no')).get('product_no__max')
-            if maxProductNo is None:
-                maxProductNo = 0
             while (1):
                 name = request.POST.get('name_' + str(count), '')
+                product_id = request.POST.get('product_id_' + str(count), '')
+                print('product_id', product_id)
+                store = request.POST.get('store_' + str(count), '')
+                product_invoice = request.POST.get('product_invoice_' + str(count), '')
+                product_quantity = request.POST.get('product_quantity_' + str(count), '')
+                product_quantity = int(product_quantity)
+                comment = request.POST.get('comment_' + str(count), '')
+                date = request.POST.get('date_' + str(count), '')
+                date = datetime.strptime(date[2:], '%y-%m-%d').date()
                 unit = request.POST.get('unit_' + str(count), '')
                 barcode = request.POST.get('barcode_' + str(count), '')
                 partsname = request.POST.get('partsname_' + str(count), '')
                 parts_id = request.POST.get('partsid_' + str(count), '')
+                parts_date = request.POST.get('parts_date_' + str(count), '')
+                parts_invoice = request.POST.get('parts_invoice_' + str(count), '')
+                parts_box = request.POST.get('box_' + str(count), '')
+                parts_date = datetime.strptime(parts_date[2:], '%y-%m-%d').date()
                 quantity = request.POST.get('quantity_' + str(count), '')
-                print(partsname, parts_id, quantity)
+                print('*****', product_invoice, product_quantity)
                 if partsname != '' and parts_id != '' and quantity != '':
                     parts_id = int(parts_id)
                     quantity = int(quantity)
@@ -236,13 +245,17 @@ def create_product(request):
                         current_quantity = 1
                     if quantity > current_quantity:
                         return render(request, 'create_product.html', {'data': linked_content, 'user': request.session['user']})
-                    print(maxProductNo, name, barcode, partsname, parts_id, quantity)
-                    Product.objects.create(product_no=maxProductNo+1, parts_unit=unit, product_name=name, barcode=barcode, parts_name=partsname, parts_id=parts_id, quantity=quantity)
+                    print(product_id, unit, name, parts_invoice, barcode, partsname, parts_id, parts_box, quantity, store, comment, date, parts_date, product_quantity, product_invoice)
+                    Product.objects.create(product_id=product_id, parts_unit=unit, product_name=name, parts_invoice=parts_invoice,
+                                           product_barcode=barcode, parts_name=partsname, parts_id=parts_id, parts_box=parts_box,
+                                           parts_quantity=quantity, product_store=store, product_comment=comment,
+                                           product_quantity=product_quantity, product_invoice=product_invoice)
                     check += 1
                 count += 1
                 if check == val:
                     return redirect(product)
         except:
+            print('error')
             return redirect(create_product)
     return render(request, 'create_product.html', {'data': linked_content, 'user': request.session['user']})
 # def add_product(request):

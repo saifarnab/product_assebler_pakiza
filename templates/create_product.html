@@ -107,17 +107,21 @@
                                         <div class="col-sm-9" style="margin-bottom: 15px">
                                             <input class="form-control" type="date" id="date" name="date">
                                         </div>
-                                        <label for="invoice" class="col-sm-3 text-right control-label col-form-label" disabled>Invoice No.</label>
+                                        <label for="product_invoice" class="col-sm-3 text-right control-label col-form-label" disabled>Invoice No.</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input class="form-control" type="text" id="invoice" name="invoice" placeholder="Invoice No. Here">
+                                            <input class="form-control" type="text" id="product_invoice" name="product_invoice" placeholder="Invoice No. Here">
                                         </div>
-                                        <label for="id" class="col-sm-3 text-right control-label col-form-label" disabled>ID</label>
+                                        <label for="product_id" class="col-sm-3 text-right control-label col-form-label" disabled>ID</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="text" name="id" class="form-control" id="id" placeholder="Product ID Here">
+                                            <input type="text" name="product_id" class="form-control" id="product_id" placeholder="Product ID Here">
                                         </div>
                                         <label for="name" class="col-sm-3 text-right control-label col-form-label" disabled>Name</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
                                             <input type="text" name="name" class="form-control" id="name" placeholder="Product Name Here">
+                                        </div>
+                                        <label for="product_quantity" class="col-sm-3 text-right control-label col-form-label" disabled>Quantity</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input type="number" name="product_quantity" class="form-control" id="product_quantity" placeholder="Product Quantity Here">
                                         </div>
                                         <label for="barcode" class="col-sm-3 text-right control-label col-form-label" disabled>Barcode</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
@@ -142,17 +146,17 @@
                                 <div class="card-body">
                                     <div class="form-group row">
 
-                                        <label class="col-sm-3 text-right control-label col-form-label">ID</label>
+                                        <label class="col-sm-3 text-right control-label col-form-label">Name</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
                                             <select name="parts" id="parts" onchange="partsValue()" class="form-control">
                                                 <option value="-1">------</option>
                                                 {% for item in data %}
-                                                    <option value={{item.parts_id}}>{{item.parts_id}}</option>
+                                                    <option value={{item.parts_id}}>{{item.name}}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
-                                        <label for="parts_name" class="col-sm-3 text-right control-label col-form-label" disabled>Name</label>
-                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                        <label style="display:none" for="parts_name" class="col-sm-3 text-right control-label col-form-label" disabled>Name</label>
+                                        <div class="col-sm-9" style="display:none;margin-bottom: 15px">
                                             <input type="text" name="parts_name" class="form-control" id="parts_name" placeholder="Spare Parts Name Here" disabled>
                                         </div>
                                         <label for="unit" class="col-sm-3 text-right control-label col-form-label">Unit</label>
@@ -167,6 +171,14 @@
                                         <label for="quantity" class="col-sm-3 text-right control-label col-form-label" disabled>Quantity</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
                                             <input type="number" name="quantity" class="form-control" id="quantity" placeholder="Quantity Here">
+                                        </div>
+                                        <label for="parts_invoice" class="col-sm-3 text-right control-label col-form-label" disabled>Invoice</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input type="text" name="parts_invoice" class="form-control" id="parts_invoice" placeholder="Invoice Here">
+                                        </div>
+                                        <label for="parts_date" class="col-sm-3 text-right control-label col-form-label" disabled>Date</label>
+                                        <div class="col-sm-9" style="margin-bottom: 15px">
+                                            <input type="date" name="parts_date" class="form-control" id="parts_date" placeholder="Date Here">
                                         </div>
                                         <div class="col-sm-3"></div>
                                         <div class="col-sm-3">
@@ -186,11 +198,11 @@
                               <thead>
                                 <tr>
                                   <th scope="col">#</th>
-                                    <th scope="col">Parts ID</th>
                                     <th scope="col">Parts Name</th>
                                     <th scope="col">Box</th>
                                     <th scope="col">Quantity</th>
-                                    <th scope="col">Unit</th>
+                                    <th scope="col">Invoice</th>
+                                    <th scope="col">Date</th>
                                     <th scope="col">Action</th>
                                 </tr>
                               </thead>
@@ -248,17 +260,24 @@
       var parts_name = document.getElementById("parts_name").value;
       var unit = document.getElementById("unit").value;
       var box = document.getElementById("box").value;
+      var store = document.getElementById("store").value;
+      var comment = document.getElementById("comment").value;
+      var date = document.getElementById("date").value;
+      product_id = document.getElementById("product_id").value;
+      var product_invoice = document.getElementById("product_invoice").value;
+      var product_quantity = document.getElementById("product_quantity").value;
       var quantity = document.getElementById("quantity").value;
       var parts = document.getElementById("parts");
       var parts_text = parts.options[parts.selectedIndex].text;
       var parts_id = parts.options[parts.selectedIndex].value;
       var barcode = document.getElementById("barcode").value;
+      var parts_invoice = document.getElementById("parts_invoice").value;
+      var parts_date = document.getElementById("parts_date").value;
       var table = document.getElementById("purchaseTable");
       var table_len = table.rows.length;
       console.log(name, quantity, parts_text, parts_id, barcode);
       document.getElementById("total").value = table.rows.length;
       var row = table.insertRow(table_len);
-      console.log("<input type='hidden' name=name_" + table_len + " value="+name+"><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=quantity_" + table_len + " value=" + quantity + " >");
       var cell1 = row.insertCell(0);
       var cell2 = row.insertCell(1);
       var cell3 = row.insertCell(2);
@@ -267,12 +286,12 @@
       var cell6 = row.insertCell(5);
       var cell7 = row.insertCell(6);
       var cell8 = row.insertCell(7);
-      cell1.innerHTML = table_len;
-      cell2.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=partsid_" + table_len + " value=" + parts_id + ">";
-      cell3.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=partsname_" + table_len + " value=" + parts_name + " >";
-      cell4.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=box_" + table_len + " value=" + box + " >";
-      cell5.innerHTML = "<input type='hidden' name=name_" + table_len + " value='"+name+"'><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=quantity_" + table_len + " value=" + quantity + " >";
-      cell6.innerHTML = "<input type='hidden' name=barcode_" + table_len + " value=" + barcode + "><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=unit_" + table_len + " value=" + unit + " >";
+      cell1.innerHTML = table_len + "<input type='hidden' name=store_" + table_len + " value=" + store + " >" + "<input type='hidden' name=comment_" + table_len + " value=" + comment + " >" + "<input type='hidden' name=date_" + table_len + " value=" + date + " >" + "<input type='hidden' name=product_invoice_" + table_len + " value=" + product_invoice + " >" + "<input type='hidden' name=product_quantity_" + table_len + " value=" + product_quantity + " >" + "<input type='hidden' name=product_id_" + table_len + " value=" + product_id + " >";
+      cell2.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='hidden' name=partsid_" + table_len + " value=" + parts_id + ">" + "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=partsname_" + table_len + " value=" + parts_name + " >";
+      cell3.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=box_" + table_len + " value=" + box + " >";
+      cell4.innerHTML = "<input type='hidden' name=name_" + table_len + " value='"+name+"'><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=quantity_" + table_len + " value=" + quantity + " >";
+      cell5.innerHTML = "<input type='hidden' name=barcode_" + table_len + " value=" + barcode + "><input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='hidden' name=unit_" + table_len + " value=" + unit + " >" + "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=parts_invoice_" + table_len + " value=" + parts_invoice + " >";
+      cell6.innerHTML = "<input class='form-control' style='border:none;background: white;color:black;' readonly='true' type='text' name=parts_date_" + table_len + " value=" + parts_date + " >";
       cell7.innerHTML = "<button class='btn btn-sm btn-danger' value='Delete' onclick='deleteRow(this)'>Delete</button>";
     }
 
