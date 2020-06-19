@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -47,7 +46,8 @@ def add_unit(request):
         unit = request.POST.get('unit', '')
         if unit != '':
             if Unit.objects.filter(unit_name=unit).exists():
-                return render(request, 'add_unit.html', {'user': request.session['user'], 'message': f"'{unit}' already exists"})
+                return render(request, 'add_unit.html',
+                              {'user': request.session['user'], 'message': f"'{unit}' already exists"})
             Unit.objects.create(unit_name=unit)
             return redirect(unit_table)
     return render(request, 'add_unit.html', {'user': request.session['user']})
@@ -86,7 +86,8 @@ def add_spare_part(request):
             return redirect(spare_parts_table)
         else:
             message = 'Name and Unit can not empty'
-            return render(request, 'add_spare_parts.html', {'data': linked_content, 'user': request.session['user'], 'message': message})
+            return render(request, 'add_spare_parts.html',
+                          {'data': linked_content, 'user': request.session['user'], 'message': message})
     return render(request, 'add_spare_parts.html', {'data': linked_content, 'user': request.session['user']})
 
 
@@ -135,7 +136,8 @@ def purchase_parts(request):
                     SparePart.objects.filter(parts_id=parts_id).update(quantity=total_quantity)
                     try:
                         print(supplier, challan, parts_id, quantity)
-                        Purchase.objects.create(supplier=supplier, challan_no=challan, parts_id=parts_id, quantity=quantity, box=box, created_at=date)
+                        Purchase.objects.create(supplier=supplier, challan_no=challan, parts_id=parts_id,
+                                                quantity=quantity, box=box, created_at=date)
                     except:
                         print('error creating purchase')
                     check += 1
@@ -144,7 +146,6 @@ def purchase_parts(request):
                     break
                 if count > 50:
                     break
-                break
         except:
             print('error in val')
             return redirect(purchase_parts)
@@ -178,25 +179,26 @@ def product(request):
         maxProductNo = 1
     linked_content = []
     for i in range(maxProductNo):
-        if Product.objects.filter(product_no=i+1).exists():
-            product = list(Product.objects.filter(product_no=i+1).values_list("product_name", "product_barcode", "parts_name", "parts_quantity", "parts_unit" ))
+        if Product.objects.filter(product_no=i + 1).exists():
+            product = list(
+                Product.objects.filter(product_no=i+1).values_list("product_name", "product_barcode", "parts_name",
+                                                                     "parts_quantity", "parts_unit", "status", "product_id",))
             parts = []
             for item in range(len(product)):
                 thisdict = {
                     'parts_name': product[item][2],
                     'quantity': product[item][3],
-                    'unit': product[item][4]
+                    'unit': product[item][4],
                 }
                 parts.append(thisdict)
             custom_dict = {
-                'product_no': i + 1,
+                'product_id': product[0][6],
                 'product_name': product[0][0],
                 'barcode': product[0][1],
                 'parts_list': parts,
+                'status': product[0][5],
             }
             linked_content.append(custom_dict)
-
-    print(linked_content)
     return render(request, 'product.html', {'data': linked_content, 'user': request.session['user']})
 
 
@@ -208,13 +210,17 @@ def create_product(request):
     for content in parts:
         linked_content.append(content.__dict__)
     if request.method == "POST":
-
         try:
             val = int(request.POST.get('total', ''))
-            print('hit create product')
             count = 1
             check = 0
-            while (1):
+            check_list = []
+            flag = False
+            args = Product.objects.filter()
+            maxProductNo = args.aggregate(Max('product_no')).get('product_no__max')
+            if maxProductNo is None:
+                maxProductNo = 1
+            while 1:
                 name = request.POST.get('name_' + str(count), '')
                 product_id = request.POST.get('product_id_' + str(count), '')
                 print('product_id', product_id)
@@ -244,20 +250,101 @@ def create_product(request):
                     if current_quantity is None:
                         current_quantity = 1
                     if quantity > current_quantity:
-                        return render(request, 'create_product.html', {'data': linked_content, 'user': request.session['user']})
-                    print(product_id, unit, name, parts_invoice, barcode, partsname, parts_id, parts_box, quantity, store, comment, date, parts_date, product_quantity, product_invoice)
-                    Product.objects.create(product_id=product_id, parts_unit=unit, product_name=name, parts_invoice=parts_invoice,
-                                           product_barcode=barcode, parts_name=partsname, parts_id=parts_id, parts_box=parts_box,
-                                           parts_quantity=quantity, product_store=store, product_comment=comment,
-                                           product_quantity=product_quantity, product_invoice=product_invoice)
+                        return render(request, 'create_product.html',
+                                      {'data': linked_content, 'user': request.session['user']})
+                    print(product_id, unit, name, parts_invoice, barcode, partsname, parts_id, parts_box, quantity,
+                          store, comment, date, parts_date, product_quantity, product_invoice)
+                    if not flag:
+                        available_product_parts = list(
+                            Product.objects.filter(parts_id=parts_id, parts_quantity=quantity).values_list(
+                                'product_id'))
+                        for item in available_product_parts:
+                            check_list.append(item[0])
+                    if flag:
+                        Product.objects.create(product_no=maxProductNo, product_id=product_id, parts_unit=unit, product_name=name,
+                                               parts_invoice=parts_invoice,
+                                               product_barcode=barcode, parts_name=partsname, parts_id=parts_id,
+                                               parts_box=parts_box,
+                                               parts_quantity=quantity, product_store=store, product_comment=comment,
+                                               product_quantity=product_quantity, product_invoice=product_invoice)
                     check += 1
                 count += 1
                 if check == val:
-                    return redirect(product)
+                    for item in check_list:
+                        if check_list.count(item) == val:
+                            if Product.objects.filter(product_id=item).count() == val:
+                                return HttpResponse('Product already available')
+                    check = 0
+                    count = 1
+                    if flag:
+                        return HttpResponse('Product Created')
+                    flag = True
+
         except:
             print('error')
             return redirect(create_product)
     return render(request, 'create_product.html', {'data': linked_content, 'user': request.session['user']})
+
+
+def change_product_status(request):
+    current = request.GET['current'].split(']')
+    print(current)
+    product_id = current[0]
+    current_status = current[1]
+    update_status = request.GET['update']
+    if current_status == 'Open':
+        current_status = 'Open Status'
+    elif current_status == 'Manufacture':
+        current_status = 'In Progress'
+    elif current_status == 'Complete':
+        current_status = 'Completed'
+
+    if update_status == 'Open':
+        update_status = 'Open Status'
+    elif update_status == 'Manufacture':
+        update_status = 'In Progress'
+    elif update_status == 'Complete':
+        update_status = 'Completed'
+
+    if current_status == update_status:
+        return HttpResponse('Select different status!')
+
+    if current_status == 'Open Status' and update_status == 'Completed':
+        return HttpResponse('Need to choose Manufacture status first!')
+
+    if current_status == 'Completed' and update_status == 'Open Status':
+        return HttpResponse('Product already created!')
+
+    if current_status == 'Completed' and update_status == 'In Progress':
+        return HttpResponse('Product already created!')
+
+    if current_status == 'Open Status' and update_status == 'In Progress':
+        product_list = list(Product.objects.filter(product_id=product_id).values_list('parts_id', 'parts_quantity'))
+
+        for parts in product_list:
+            parts_quantity = list(SparePart.objects.filter(parts_id=int(parts[0])).values_list('quantity'))
+            if parts_quantity[0][0] is None:
+                return HttpResponse('Spare parts quantity is not enough!')
+            if parts_quantity[0][0] < parts[1]:
+                return HttpResponse('Spare parts quantity is not enough!')
+
+        for parts in product_list:
+            parts_quantity = list(SparePart.objects.filter(parts_id=int(parts[0])).values_list('quantity'))
+            SparePart.objects.filter(parts_id=int(parts[0])).update(quantity=parts_quantity[0][0] - parts[1])
+
+        Product.objects.filter(product_id=product_id).update(status=update_status)
+
+    if current_status == 'In Progress' and update_status == 'Completed':
+        Product.objects.filter(product_id=product_id).update(status=update_status)
+
+    return HttpResponse('Status Updated!')
+
+
+
+
+
+
+
 # def add_product(request):
 #     if 'user' not in request.session:
 #         return redirect('login')

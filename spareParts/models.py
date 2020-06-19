@@ -1,6 +1,13 @@
 from django.db import models
 
 
+STATUS_CHOICES = (
+        ('Open Status', 'Open Status'),
+        ('In Progress', 'In Progress'),
+        ('Completed', 'Completed')
+    )
+
+
 class Unit(models.Model):
     unit_id = models.BigAutoField(primary_key=True)
     unit_name = models.CharField(max_length=288, null=False, blank=False, unique=True)
@@ -30,8 +37,8 @@ class Purchase(models.Model):
 
 
 class Product(models.Model):
-    product_no = models.BigAutoField(primary_key=True)
-    product_id = models.CharField(max_length=288, unique=True)
+    product_no = models.BigIntegerField()
+    product_id = models.CharField(max_length=288, blank=True, null=True)
     product_name = models.CharField(max_length=288, blank=True, null=True)
     product_date = models.DateTimeField(auto_now=True)
     product_quantity = models.BigIntegerField(null=True, blank=True)
@@ -44,6 +51,7 @@ class Product(models.Model):
     parts_unit = models.CharField(max_length=288, blank=True, null=True)
     parts_box = models.CharField(max_length=288, blank=True, null=True)
     parts_quantity = models.BigIntegerField(null=True, blank=True)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Open Status')
     parts_invoice = models.CharField(max_length=288, blank=True, null=True)
     parts_date = models.DateTimeField(auto_now=True)
 

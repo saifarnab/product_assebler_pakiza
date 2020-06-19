@@ -51,48 +51,19 @@
                         <span class="logo-text">
                              <p style="font-weight: bold;">ASSEMBLER</p>
                         </span>
-                        <!-- Logo icon -->
-                        <!-- <b class="logo-icon"> -->
-                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
-                            <!-- Dark Logo icon -->
-                            <!-- <img src="../../assets/images/logo-text.png" alt="homepage" class="light-logo" /> -->
-
-                        <!-- </b> -->
-                        <!--End Logo icon -->
                     </a>
-                    <!-- ============================================================== -->
-                    <!-- End Logo -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- Toggle which is visible on mobile only -->
-                    <!-- ============================================================== -->
                     <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="ti-more"></i></a>
                 </div>
-                <!-- ============================================================== -->
-                <!-- End Logo -->
-                <!-- ============================================================== -->
                 <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
-                    <!-- ============================================================== -->
-                    <!-- toggle and nav items -->
-                    <!-- ============================================================== -->
-
                     <ul class="navbar-nav float-left mr-auto">
                         <li class="nav-item d-none d-md-block"><a class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)" data-sidebartype="mini-sidebar"><i class="mdi mdi-menu font-24"></i></a></li>
-                        <!-- ============================================================== -->
-                        <!-- create new -->
-                        <!-- ============================================================== -->
-
-                        <!-- ============================================================== -->
-                        <!-- Search -->
-                        <!-- ============================================================== -->
-
                     </ul>
-                    <!-- ============================================================== -->
-                    <!-- Right side toggle and nav items -->
-                    <!-- ============================================================== -->
                     <ul class="navbar-nav float-right">
-                        <!-- User profile and search -->
-                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-bell font-24"></i>
+                            </a>
+
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"
                                href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -106,12 +77,7 @@
                 </div>
             </nav>
         </header>
-        <!-- ============================================================== -->
-        <!-- End Topbar header -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Left Sidebar - style you can find in sidebar.scss  -->
-        <!-- ============================================================== -->
+
          <aside class="left-sidebar" data-sidebarbg="skin5">
             <div class="scroll-sidebar">
                 <nav class="sidebar-nav">
@@ -125,7 +91,6 @@
                 </nav>
             </div>
         </aside>
-
         <div class="page-wrapper">
             <div class="container-fluid">
                 <a href="{% url 'createproduct' %}" style="margin-bottom: 15px; color:white;" class="btn btn-dark">Create Product</a>
@@ -143,12 +108,14 @@
                                                 <th>Product Name</th>
                                                 <th>Parts List</th>
                                                 <th>Product Barcode</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         {% for element in data %}
                                             <tr>
-                                                <th>{{element.product_no}}</th>
+                                                <th>{{element.product_id}}</th>
                                                 <th>{{element.product_name}}</th>
                                                 <th>
                                                     <ul>
@@ -158,6 +125,10 @@
                                                     </ul>
                                                 </th>
                                                 <th>{{element.barcode}}</th>
+                                                <th>{{element.status}}</th>
+                                                <th>
+                                                    <button id="generate" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-warning" data-toggle="modal" data-target="#exampleModalCenter">Update Status</button>
+                                                </th>
                                             </tr>
                                         {% endfor %}
                                         </tbody>
@@ -167,11 +138,12 @@
                                                 <th>Product Name</th>
                                                 <th>Parts List</th>
                                                 <th>Product Barcode</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -180,7 +152,33 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Update Product Status</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <form>
+               <input type="hidden" id="pass_val">
+               <label for="container">Status Choices:</label>
+               <div id="container"></div>
+           </form>
+              <p style="color:red" id="response">
 
+              </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" onclick="changeStatus()" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script src="{% static 'assets/libs/jquery/dist/jquery.min.js' %}"></script>
     <!-- Bootstrap tether Core JavaScript -->
@@ -200,6 +198,51 @@
     <script src="{% static 'assets/extra-libs/multicheck/jquery.multicheck.js' %}"></script>
     <script src="{% static 'assets/extra-libs/DataTables/datatables.min.js' %}"></script>
     <script>
+    function changeStatus() {
+      var x = document.getElementById("pass_val").value;
+      var status = document.getElementById("status");
+      var status = status.options[status.selectedIndex].value;
+      console.log(status);
+      $.ajax(
+        {
+            type:"GET",
+            url: "{% url 'changeproductstatus' %}",
+            data:{
+                     current:x,
+                     update:status
+            },
+            success: function( data )
+            {
+                document.getElementById('response').innerHTML = data;
+            }
+         })
+
+    }
+
+
+    document.getElementById('generate').onclick = function() {
+      document.getElementById('container').innerHTML = "";
+      document.getElementById('response').innerHTML = "";
+      var product_id = $(this).data('id');
+      var product_status = $(this).data('status');
+      var mix = product_id + ']' + product_status;
+      console.log(product_id, product_status);
+      var values = ["Open Status", "Manufacture", "Complete"];
+      var select = document.createElement("select");
+      select.name = "status";
+      select.id = "status";
+      select.classList.add("form-control");
+      for (const val of values) {
+        var option = document.createElement("option");
+        option.value = val;
+        option.text = val.charAt(0).toUpperCase() + val.slice(1);
+        select.appendChild(option);
+      }
+      document.getElementById("container").appendChild(select);
+      document.getElementById("pass_val").value = mix;
+
+}
+
 
         /****************************************
          *       Basic Table                   *

@@ -61,6 +61,11 @@
                     </ul>
                     <ul class="navbar-nav float-right">
                         <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-bell font-24"></i>
+                            </a>
+
+                        </li>
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"
                                href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="{% static 'assets/images/users/1.jpg' %}" alt="user" class="rounded-circle" width="31"></a>
@@ -191,7 +196,7 @@
                                 </div>
                             </form>
                             <h5 style="margin-left: 15px;">Addded Spare Parts List:</h5>
-                            <form method="post" action="{% url 'createproduct' %}">
+                            <form id="submitted_form" method="post" action="{% url 'createproduct' %}">
                                  {% csrf_token %}
                                 <input name="total" id="total" type="hidden" >
                                 <table id="purchaseTable" class="table table-bordered">
@@ -247,6 +252,23 @@
         $('#zero_config').DataTable();
     </script>
     <script type="text/javascript">
+    $("#submitted_form").submit(function(event){
+        event.preventDefault(); //prevent default action
+        var post_url = $(this).attr("action"); //get form action url
+        var request_method = $(this).attr("method"); //get form GET/POST method
+        var form_data = $(this).serialize(); //Encode form elements for submission
+
+        $.ajax({
+            url : post_url,
+            type: request_method,
+            data : form_data
+        }).done(function(response){ //
+            alert(response)
+        });
+    });
+
+
+
     function deleteRow(btn) {
       var row = btn.parentNode.parentNode;
       row.parentNode.removeChild(row);
