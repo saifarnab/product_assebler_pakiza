@@ -97,3 +97,14 @@
     background: transparent;
     color: white;
   }
+
+  #prod_open {
+    display: none;
+  }
+  #prod_progress {
+    display: none;
+  }
+  #prod_complete {
+    display: none;
+  }
+  #prod_all {display: block;}

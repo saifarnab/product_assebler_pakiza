@@ -226,7 +226,7 @@ def product(request):
     maxProductNo = args.aggregate(Max('product_no')).get('product_no__max')
     if maxProductNo is None:
         maxProductNo = 1
-    linked_content = []
+    all = []
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i + 1).exists():
             product = list(
@@ -247,9 +247,91 @@ def product(request):
                 'parts_list': parts,
                 'status': product[0][5],
             }
-            linked_content.append(custom_dict)
-    print(linked_content)
-    return render(request, 'product.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
+            all.append(custom_dict)
+    print(all)
+    open_status = []
+    for i in range(maxProductNo):
+        if Product.objects.filter(product_no=i + 1).exists():
+            product = list(
+                Product.objects.filter(product_no=i+1).values_list("product_name", "product_barcode", "parts_name",
+                                                                     "parts_quantity", "parts_unit", "status", "product_id",))
+            if product[0][5] == 'Open Status':
+                parts = []
+                for item in range(len(product)):
+                    thisdict = {
+                        'parts_name': product[item][2],
+                        'quantity': product[item][3],
+                        'unit': product[item][4],
+                    }
+                    parts.append(thisdict)
+                custom_dict = {
+                    'product_id': product[0][6],
+                    'product_name': product[0][0],
+                    'barcode': product[0][1],
+                    'parts_list': parts,
+                    'status': product[0][5],
+                }
+                open_status.append(custom_dict)
+    print(open_status)
+
+    in_progress = []
+    for i in range(maxProductNo):
+        if Product.objects.filter(product_no=i + 1).exists():
+            product = list(
+                Product.objects.filter(product_no=i + 1).values_list("product_name", "product_barcode", "parts_name",
+                                                                     "parts_quantity", "parts_unit", "status",
+                                                                     "product_id", ))
+            if product[0][5] == 'In Progress':
+                parts = []
+                for item in range(len(product)):
+                    thisdict = {
+                        'parts_name': product[item][2],
+                        'quantity': product[item][3],
+                        'unit': product[item][4],
+                    }
+                    parts.append(thisdict)
+                custom_dict = {
+                    'product_id': product[0][6],
+                    'product_name': product[0][0],
+                    'barcode': product[0][1],
+                    'parts_list': parts,
+                    'status': product[0][5],
+                }
+                in_progress.append(custom_dict)
+    print(in_progress)
+
+    completed = []
+    for i in range(maxProductNo):
+        if Product.objects.filter(product_no=i + 1).exists():
+            product = list(
+                Product.objects.filter(product_no=i + 1).values_list("product_name", "product_barcode", "parts_name",
+                                                                     "parts_quantity", "parts_unit", "status",
+                                                                     "product_id", ))
+            if product[0][5] == 'Completed':
+                parts = []
+                for item in range(len(product)):
+                    thisdict = {
+                        'parts_name': product[item][2],
+                        'quantity': product[item][3],
+                        'unit': product[item][4],
+                    }
+                    parts.append(thisdict)
+                custom_dict = {
+                    'product_id': product[0][6],
+                    'product_name': product[0][0],
+                    'barcode': product[0][1],
+                    'parts_list': parts,
+                    'status': product[0][5],
+                }
+                completed.append(custom_dict)
+    print(completed)
+    return render(request, 'product.html', {
+        'notification': notification_list,
+        'all': all,
+        'open_status': open_status,
+        'in_progress': in_progress,
+        'completed': completed,
+        'user': request.session['user']})
 
 
 def create_product(request):
@@ -311,7 +393,7 @@ def create_product(request):
                     if current_quantity is None:
                         current_quantity = 1
                     if quantity > current_quantity:
-                        return HttpResponse('Spare Parts Quantity is not enough!')
+                        return HttpResponse("Spare Parts Quantity is not enough!")
                     print(product_id, unit, name, parts_invoice, barcode, partsname, parts_id, parts_box, quantity,
                           store, comment, date, parts_date, product_quantity, product_invoice)
                     if not flag:
@@ -334,20 +416,22 @@ def create_product(request):
                     for item in check_list:
                         if check_list.count(item) == val:
                             if Product.objects.filter(product_id=item).count() == val:
-                                return HttpResponse('Product already available')
+                                return HttpResponse("Product already available")
                     check = 0
                     count = 1
                     if flag:
                         user = User.objects.all()
                         notify.send(request.user, recipient=user, verb=', created a product')
                         print('hit by product created')
-                        return HttpResponse('Product Created')
+                        return HttpResponse("Product Created")
                     flag = True
 
         except:
             print('error')
             return redirect(create_product)
-    return render(request, 'create_product.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
+
+    if request.method == 'GET':
+        return render(request, 'create_product.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def change_product_status(request):
