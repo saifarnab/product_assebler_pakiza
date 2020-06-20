@@ -392,8 +392,9 @@
                      update:status
             },
             success: function( data )
-            {
-                document.getElementById('response').innerHTML = data;
+            {   if (data == 'Status Updated!') {location.reload(); }
+                else {document.getElementById('response').innerHTML = data;}
+
             }
          })
 
