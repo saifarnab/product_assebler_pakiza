@@ -99,11 +99,12 @@
             <div class="scroll-sidebar">
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav" class="p-t-30">
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="#" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="index.html" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
                        <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Units </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'spareparts' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Spare Parts </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'purchases' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Purchases </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'product' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Products </span></a></li>
+                       <li class="sidebar-item"><a href="{% url 'notifications' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Notifications </span></a></li>
                     </ul>
                 </nav>
             </div>
@@ -155,7 +156,7 @@
                                                 <th>{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
-                                                    <button id="generate_all" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
+                                                    <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" id="generate_all" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
 
                                                 </th>
                                             </tr>
@@ -202,7 +203,7 @@
                                                 <th>{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
-                                                    <button id="generate_open" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
+                                                    <button onclick="myFunction()" id="generate_open" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
 
                                                 </th>
                                             </tr>
@@ -248,7 +249,7 @@
                                                 <th>{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
-                                                    <button id="generate_progress" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
+                                                    <button onclick="myFunction()" id="generate_progress" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
 
                                                 </th>
                                             </tr>
@@ -295,7 +296,7 @@
                                                 <th>{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
-                                                    <button id="generate_com" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
+                                                    <button onclick="myFunction({{element.product_id}}, {{element.status}})" id="generate_com" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
 
                                                 </th>
                                             </tr>
@@ -393,20 +394,19 @@
             success: function( data )
             {
                 document.getElementById('response').innerHTML = data;
-                window.location.reload();
             }
          })
 
     }
 
 
-    document.getElementById('generate_all').onclick = function() {
+    function myFunction(x, y) {
       document.getElementById('container').innerHTML = "";
       document.getElementById('response').innerHTML = "";
-      var product_id = $(this).data('id');
-      var product_status = $(this).data('status');
+      var product_id = x;
+      var product_status = y;
+      console.log(x,y);
       var mix = product_id + ']' + product_status;
-      console.log(product_id, product_status);
       var values = ["Open Status", "Manufacture", "Complete"];
       var select = document.createElement("select");
       select.name = "status";
@@ -422,78 +422,6 @@
       document.getElementById("pass_val").value = mix;
 
 }
-
-   document.getElementById('generate_open').onclick = function() {
-      document.getElementById('container').innerHTML = "";
-      document.getElementById('response').innerHTML = "";
-      var product_id = $(this).data('id');
-      var product_status = $(this).data('status');
-      var mix = product_id + ']' + product_status;
-      console.log(product_id, product_status);
-      var values = ["Open Status", "Manufacture", "Complete"];
-      var select = document.createElement("select");
-      select.name = "status";
-      select.id = "status";
-      select.classList.add("form-control");
-      for (const val of values) {
-        var option = document.createElement("option");
-        option.value = val;
-        option.text = val.charAt(0).toUpperCase() + val.slice(1);
-        select.appendChild(option);
-      }
-      document.getElementById("container").appendChild(select);
-      document.getElementById("pass_val").value = mix;
-
-}
-
-document.getElementById('generate_progress').onclick = function() {
-      document.getElementById('container').innerHTML = "";
-      document.getElementById('response').innerHTML = "";
-      var product_id = $(this).data('id');
-      var product_status = $(this).data('status');
-      var mix = product_id + ']' + product_status;
-      console.log(product_id, product_status);
-      var values = ["Open Status", "Manufacture", "Complete"];
-      var select = document.createElement("select");
-      select.name = "status";
-      select.id = "status";
-      select.classList.add("form-control");
-      for (const val of values) {
-        var option = document.createElement("option");
-        option.value = val;
-        option.text = val.charAt(0).toUpperCase() + val.slice(1);
-        select.appendChild(option);
-      }
-      document.getElementById("container").appendChild(select);
-      document.getElementById("pass_val").value = mix;
-
-}
-
-document.getElementById('generate_com').onclick = function() {
-      document.getElementById('container').innerHTML = "";
-      document.getElementById('response').innerHTML = "";
-      var product_id = $(this).data('id');
-      var product_status = $(this).data('status');
-      var mix = product_id + ']' + product_status;
-      console.log(product_id, product_status);
-      var values = ["Open Status", "Manufacture", "Complete"];
-      var select = document.createElement("select");
-      select.name = "status";
-      select.id = "status";
-      select.classList.add("form-control");
-      for (const val of values) {
-        var option = document.createElement("option");
-        option.value = val;
-        option.text = val.charAt(0).toUpperCase() + val.slice(1);
-        select.appendChild(option);
-      }
-      document.getElementById("container").appendChild(select);
-      document.getElementById("pass_val").value = mix;
-
-}
-
-
-
 
 function show_all_prod (){
     document.getElementById("prod_all").style.display = "block";

@@ -120,8 +120,8 @@ def purchase(request):
     user = request.session['user']
     auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
+    notifications_unread = auth_user.notifications.unread()
+    for item in list(notifications_unread):
         notification_list.append(str(item))
     if 'user' not in request.session:
         return redirect('login')
@@ -129,7 +129,10 @@ def purchase(request):
     linked_content = []
     for content in purchase:
         linked_content.append(content.__dict__)
-    return render(request, 'purchase.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
+
+    return render(request, 'purchase.html',
+                  {'notification': notification_list, 'data': linked_content,
+                   'user': request.session['user']})
 
 
 def purchase_parts(request):
@@ -393,7 +396,7 @@ def create_product(request):
                     if current_quantity is None:
                         current_quantity = 1
                     if quantity > current_quantity:
-                        return HttpResponse("Spare Parts Quantity is not enough!")
+                        return HttpResponse("401")
                     print(product_id, unit, name, parts_invoice, barcode, partsname, parts_id, parts_box, quantity,
                           store, comment, date, parts_date, product_quantity, product_invoice)
                     if not flag:
@@ -416,7 +419,7 @@ def create_product(request):
                     for item in check_list:
                         if check_list.count(item) == val:
                             if Product.objects.filter(product_id=item).count() == val:
-                                return HttpResponse("Product already available")
+                                return HttpResponse("402")
                     check = 0
                     count = 1
                     if flag:
@@ -430,7 +433,7 @@ def create_product(request):
             print('error')
             return redirect(create_product)
 
-    if request.method == 'GET':
+    else:
         return render(request, 'create_product.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
@@ -503,3 +506,18 @@ def mark_notification_read(request):
 
 def product_tabel(request):
     return render(request, 'tables.html', {})
+
+
+def all_notification(request):
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
+    all_notification_list = []
+    notifications_unread = auth_user.notifications.unread()
+    notifications_read = auth_user.notifications.read()
+
+    for item in list(notifications_unread):
+        all_notification_list.append(str(item))
+    for item in list(notifications_read):
+        all_notification_list.append(str(item))
+
+    return render(request, 'notifications.html', {'data': all_notification_list})
