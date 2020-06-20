@@ -7,6 +7,8 @@ from .models import SparePart, Unit, Purchase, Product
 from django.urls import reverse
 from django.contrib.auth import logout
 from django.db.models import Max
+from notifications.signals import notify
+from django.http import HttpResponseRedirect
 
 
 def login(request):
@@ -31,17 +33,25 @@ def logout_session(request):
 def unit_table(request):
     if 'user' not in request.session:
         return redirect('login')
+    notification_list = []
+    notifications = request.user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
     unit = Unit.objects.all()
     linked_content = []
     for content in unit:
         linked_content.append(content.__dict__)
-    print(linked_content)
-    return render(request, 'tables.html', {'data': linked_content, 'user': request.session['user']})
+    print(notification_list)
+    return render(request, 'tables.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def add_unit(request):
     if 'user' not in request.session:
         return redirect('login')
+    notification_list = []
+    notifications = request.user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
     if request.POST:
         unit = request.POST.get('unit', '')
         if unit != '':
@@ -50,24 +60,31 @@ def add_unit(request):
                               {'user': request.session['user'], 'message': f"'{unit}' already exists"})
             Unit.objects.create(unit_name=unit)
             return redirect(unit_table)
-    return render(request, 'add_unit.html', {'user': request.session['user']})
+    return render(request, 'add_unit.html', {'notification': notification_list, 'user': request.session['user']})
 
 
 def spare_parts_table(request):
     if 'user' not in request.session:
         return redirect('login')
+    notification_list = []
+    notifications = request.user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
     parts = SparePart.objects.all()
     linked_content = []
     for content in parts:
         linked_content.append(content.__dict__)
     print(linked_content)
-    return render(request, 'spare_parts_tables.html', {'data': linked_content, 'user': request.session['user']})
+    return render(request, 'spare_parts_tables.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def add_spare_part(request):
     if 'user' not in request.session:
         return redirect('login')
-
+    notification_list = []
+    notifications = request.user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
     linked_content = []
     unit = Unit.objects.all()
     for content in unit:
@@ -88,22 +105,30 @@ def add_spare_part(request):
             message = 'Name and Unit can not empty'
             return render(request, 'add_spare_parts.html',
                           {'data': linked_content, 'user': request.session['user'], 'message': message})
-    return render(request, 'add_spare_parts.html', {'data': linked_content, 'user': request.session['user']})
+    return render(request, 'add_spare_parts.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def purchase(request):
+    notification_list = []
+    notifications = request.user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
     if 'user' not in request.session:
         return redirect('login')
     purchase = Purchase.objects.all()
     linked_content = []
     for content in purchase:
         linked_content.append(content.__dict__)
-    return render(request, 'purchase.html', {'data': linked_content, 'user': request.session['user']})
+    return render(request, 'purchase.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def purchase_parts(request):
     if 'user' not in request.session:
         return redirect('login')
+    notification_list = []
+    notifications = request.user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
     linked_content = []
     parts = SparePart.objects.all()
     for content in parts:
@@ -152,10 +177,14 @@ def purchase_parts(request):
         while True:
             break
         print(val)
-    return render(request, 'purchase_spare_parts.html', {'data': linked_content, 'user': request.session['user']})
+    return render(request, 'purchase_spare_parts.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def get_unit_stock(request):
+    notification_list = []
+    notifications = request.user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
     data = int(request.GET['id'])
     if data < 1:
         data = 'Spare Part Unit Here' + ', ' + 'Spare Part Available Stock Here'
@@ -173,6 +202,10 @@ def get_unit_stock(request):
 def product(request):
     if 'user' not in request.session:
         return redirect('login')
+    notification_list = []
+    notifications = request.user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
     args = Product.objects.filter()
     maxProductNo = args.aggregate(Max('product_no')).get('product_no__max')
     if maxProductNo is None:
@@ -199,12 +232,17 @@ def product(request):
                 'status': product[0][5],
             }
             linked_content.append(custom_dict)
-    return render(request, 'product.html', {'data': linked_content, 'user': request.session['user']})
+    print(linked_content)
+    return render(request, 'product.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def create_product(request):
     if 'user' not in request.session:
         return redirect('login')
+    notification_list = []
+    notifications = request.user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
     linked_content = []
     parts = SparePart.objects.all()
     for content in parts:
@@ -261,7 +299,8 @@ def create_product(request):
                         for item in available_product_parts:
                             check_list.append(item[0])
                     if flag:
-                        Product.objects.create(product_no=maxProductNo, product_id=product_id, parts_unit=unit, product_name=name,
+                        print('hit to create')
+                        Product.objects.create(product_no=maxProductNo+1, product_id=product_id, parts_unit=unit, product_name=name,
                                                parts_invoice=parts_invoice,
                                                product_barcode=barcode, parts_name=partsname, parts_id=parts_id,
                                                parts_box=parts_box,
@@ -277,16 +316,22 @@ def create_product(request):
                     check = 0
                     count = 1
                     if flag:
+                        user = User.objects.all()
+                        notify.send(request.user, recipient=user, verb=', created a product')
                         return HttpResponse('Product Created')
                     flag = True
 
         except:
             print('error')
             return redirect(create_product)
-    return render(request, 'create_product.html', {'data': linked_content, 'user': request.session['user']})
+    return render(request, 'create_product.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def change_product_status(request):
+    notification_list = []
+    notifications = request.user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
     current = request.GET['current'].split(']')
     print(current)
     product_id = current[0]
@@ -340,81 +385,11 @@ def change_product_status(request):
     return HttpResponse('Status Updated!')
 
 
-
-
-
-
-
-# def add_product(request):
-#     if 'user' not in request.session:
-#         return redirect('login')
-#
-#     ram = SparePart.objects.filter(type='Ram')
-#     hdd = SparePart.objects.filter(type='HDD')
-#     ssd = SparePart.objects.filter(type='SSD')
-#     screen = SparePart.objects.filter(type='Screen Size')
-#
-#     ram_list = []
-#     hdd_list = []
-#     ssd_list = []
-#     screen_list = []
-#
-#     for item in ram:
-#         ram_item = item.name + ' ' + item.measurement_unit_scale + ' ' + item.measurement_unit
-#         ram_list.append({'key': item.parts_id, 'value': ram_item})
-#     for item in hdd:
-#         hdd_item = item.name + ' ' + item.measurement_unit_scale + ' ' + item.measurement_unit
-#         hdd_list.append({'key': item.parts_id, 'value': hdd_item})
-#     for item in ssd:
-#         ssd_item = item.name + ' ' + item.measurement_unit_scale + ' ' + item.measurement_unit
-#         ssd_list.append({'key': item.parts_id, 'value': ssd_item})
-#     for item in screen:
-#         screen_item = item.name + ' ' + item.measurement_unit_scale + ' ' + item.measurement_unit
-#         screen_list.append({'key': item.parts_id, 'value': screen_item})
-#
-#     if request.method == "POST":
-#         message = []
-#         ram = request.POST.get('ram', '')
-#         ram_quantity = request.POST.get('ram_quantity', '')
-#         hdd = request.POST.get('hdd', '')
-#         hdd_quantity = request.POST.get('ram_quantity', '')
-#         ssd = request.POST.get('ssd', '')
-#         ssd_quantity = request.POST.get('ssd_quantity', '')
-#         screen = request.POST.get('screen', '')
-#         screen_quantity = request.POST.get('screen_quantity', '')
-#         print(type(ssd))
-#         try:
-#             if ram != '0':
-#                 ram_db = SparePart.objects.get(parts_id=int(ram))
-#                 if int(ram_quantity) >= int(ram_db.quantity):
-#                     message.append(f'only {ram_db.quantity} piece of ram available in stock')
-#
-#             if hdd != '0':
-#                 hdd_db = SparePart.objects.get(parts_id=int(hdd))
-#                 if int(hdd_quantity) >= int(hdd_db.quantity):
-#                     message.append(f'only {hdd_db.quantity} piece of hdd available in stock')
-#
-#             if ssd != '0':
-#                 ssd_db = SparePart.objects.get(parts_id=int(ssd))
-#                 if int(ssd_quantity) >= int(ssd_db.quantity):
-#                     message.append(f'only {ssd_db.quantity} piece of ssd available in stock')
-#
-#             if screen != '0':
-#                 screen_db = SparePart.objects.get(parts_id=int(screen))
-#                 if int(screen_quantity) >= int(screen_db.quantity):
-#                     message.append(f'only {screen_db.quantity} piece of screen available in stock')
-#
-#             if Product.objects.filter(ram=int(ram), hdd=int(hdd), ssd=int(ssd), screen=int(screen)).exists():
-#                 message.append('Product already available')
-#
-#             if message:
-#                 return render(request, 'add-product.html', {'ram': ram_list, 'hdd': hdd_list, 'ssd': ssd_list, 'screen': screen_list, 'message': message})
-#             Product.objects.create(ram=int(ram), hdd=int(hdd), ssd=int(ssd), screen=int(screen))
-#         except:
-#             message.append('Invalid Input')
-#             return render(request, 'add-product.html', {'ram': ram_list, 'hdd': hdd_list, 'ssd': ssd_list, 'screen': screen_list, 'message':message})
-#
-#     return render(request, 'add-product.html', {'ram': ram_list, 'hdd': hdd_list, 'ssd': ssd_list, 'screen': screen_list, 'user': request.session['user']})
+def mark_notification_read(request):
+    qs = request.user.notifications.unread()
+    qs.mark_all_as_read(request.user)
+    print('hit')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def product_tabel(request):

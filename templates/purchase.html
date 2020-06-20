@@ -1,4 +1,5 @@
 {% load static %}
+{% load notifications_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,21 +52,9 @@
                         <span class="logo-text">
                              <p style="font-weight: bold;">ASSEMBLER</p>
                         </span>
-                        <!-- Logo icon -->
-                        <!-- <b class="logo-icon"> -->
-                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
-                            <!-- Dark Logo icon -->
-                            <!-- <img src="../../assets/images/logo-text.png" alt="homepage" class="light-logo" /> -->
 
-                        <!-- </b> -->
-                        <!--End Logo icon -->
                     </a>
-                    <!-- ============================================================== -->
-                    <!-- End Logo -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- Toggle which is visible on mobile only -->
-                    <!-- ============================================================== -->
+
                     <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="ti-more"></i></a>
                 </div>
                 <!-- ============================================================== -->
@@ -94,9 +83,24 @@
                         <!-- User profile and search -->
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-bell font-24"></i>
-                            </a>
+                                <a class=" nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"
+                               href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="mdi mdi-bell font-24"></i></a>
+                                <span style="position: absolute;top: 23%;left: 65%;border: 1px solid;padding: 0px 5px;
+                                border-radius: 50%;font-size: 12px;background: yellow;">{{notification|length}}</span>
 
+                                <div class="dropdown-menu dropdown-menu-right user-dd animated" style="min-width: 0;">
+                                {% for item in notification %}
+                                    <a style="margin-bottom: 5px;border: 1px solid gray; border-radius: 10px;" class="dropdown-item">{{item}}</a>
+                                {% endfor %}
+
+                                {% if notification %}
+                                    <div style="text-align: center;">
+                                        <a style="border: 1px solid gray; border-radius: 10px;" class=" btn btn-dark" href="{% url 'markread' %}">Marked Read</a>
+
+                                    </div>
+                                {% endif %}
+                            </div>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"

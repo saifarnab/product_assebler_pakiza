@@ -19,5 +19,6 @@ urlpatterns = [
     path(r'^changeproductstatus/$', views.change_product_status, name='changeproductstatus'),
     path('product/', views.product, name='product'),
     path('createproduct/', views.create_product, name='createproduct'),
+    path('markread', views.mark_notification_read, name='markread')
 ]
 
