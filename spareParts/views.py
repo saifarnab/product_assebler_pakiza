@@ -279,7 +279,10 @@ def create_product(request):
             while 1:
                 name = request.POST.get('name_' + str(count), '')
                 product_id = request.POST.get('product_id_' + str(count), '')
-                print('product_id', product_id)
+                if product_id is '':
+                    print('empty')
+                    count += 1
+                    continue
                 store = request.POST.get('store_' + str(count), '')
                 product_invoice = request.POST.get('product_invoice_' + str(count), '')
                 product_quantity = request.POST.get('product_quantity_' + str(count), '')
@@ -297,7 +300,9 @@ def create_product(request):
                 parts_date = datetime.strptime(parts_date[2:], '%y-%m-%d').date()
                 quantity = request.POST.get('quantity_' + str(count), '')
                 print('*****', product_invoice, product_quantity)
+                print(partsname, parts_id, quantity)
                 if partsname != '' and parts_id != '' and quantity != '':
+
                     parts_id = int(parts_id)
                     quantity = int(quantity)
                     qry = SparePart.objects.filter(parts_id=parts_id).values_list('quantity')
@@ -306,8 +311,7 @@ def create_product(request):
                     if current_quantity is None:
                         current_quantity = 1
                     if quantity > current_quantity:
-                        return render(request, 'create_product.html',
-                                      {'data': linked_content, 'user': request.session['user']})
+                        return HttpResponse('Spare Parts Quantity is not enough!')
                     print(product_id, unit, name, parts_invoice, barcode, partsname, parts_id, parts_box, quantity,
                           store, comment, date, parts_date, product_quantity, product_invoice)
                     if not flag:
@@ -336,6 +340,7 @@ def create_product(request):
                     if flag:
                         user = User.objects.all()
                         notify.send(request.user, recipient=user, verb=', created a product')
+                        print('hit by product created')
                         return HttpResponse('Product Created')
                     flag = True
 
