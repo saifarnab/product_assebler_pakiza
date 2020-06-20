@@ -33,8 +33,10 @@ def logout_session(request):
 def unit_table(request):
     if 'user' not in request.session:
         return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = request.user.notifications.unread()
+    notifications = auth_user.notifications.unread()
     for item in list(notifications):
         notification_list.append(str(item))
     unit = Unit.objects.all()
@@ -48,8 +50,10 @@ def unit_table(request):
 def add_unit(request):
     if 'user' not in request.session:
         return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = request.user.notifications.unread()
+    notifications = auth_user.notifications.unread()
     for item in list(notifications):
         notification_list.append(str(item))
     if request.POST:
@@ -66,8 +70,10 @@ def add_unit(request):
 def spare_parts_table(request):
     if 'user' not in request.session:
         return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = request.user.notifications.unread()
+    notifications = auth_user.notifications.unread()
     for item in list(notifications):
         notification_list.append(str(item))
     parts = SparePart.objects.all()
@@ -81,8 +87,10 @@ def spare_parts_table(request):
 def add_spare_part(request):
     if 'user' not in request.session:
         return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = request.user.notifications.unread()
+    notifications = auth_user.notifications.unread()
     for item in list(notifications):
         notification_list.append(str(item))
     linked_content = []
@@ -109,8 +117,10 @@ def add_spare_part(request):
 
 
 def purchase(request):
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = request.user.notifications.unread()
+    notifications = auth_user.notifications.unread()
     for item in list(notifications):
         notification_list.append(str(item))
     if 'user' not in request.session:
@@ -125,8 +135,10 @@ def purchase(request):
 def purchase_parts(request):
     if 'user' not in request.session:
         return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = request.user.notifications.unread()
+    notifications = auth_user.notifications.unread()
     for item in list(notifications):
         notification_list.append(str(item))
     linked_content = []
@@ -181,8 +193,10 @@ def purchase_parts(request):
 
 
 def get_unit_stock(request):
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = request.user.notifications.unread()
+    notifications = auth_user.notifications.unread()
     for item in list(notifications):
         notification_list.append(str(item))
     data = int(request.GET['id'])
@@ -202,8 +216,10 @@ def get_unit_stock(request):
 def product(request):
     if 'user' not in request.session:
         return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = request.user.notifications.unread()
+    notifications = auth_user.notifications.unread()
     for item in list(notifications):
         notification_list.append(str(item))
     args = Product.objects.filter()
@@ -239,8 +255,10 @@ def product(request):
 def create_product(request):
     if 'user' not in request.session:
         return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = request.user.notifications.unread()
+    notifications = auth_user.notifications.unread()
     for item in list(notifications):
         notification_list.append(str(item))
     linked_content = []
@@ -328,8 +346,10 @@ def create_product(request):
 
 
 def change_product_status(request):
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
     notification_list = []
-    notifications = request.user.notifications.unread()
+    notifications = auth_user.notifications.unread()
     for item in list(notifications):
         notification_list.append(str(item))
     current = request.GET['current'].split(']')
