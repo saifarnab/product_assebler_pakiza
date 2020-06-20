@@ -469,6 +469,9 @@ def change_product_status(request):
     if current_status == 'Open Status' and update_status == 'Completed':
         return HttpResponse('Need to choose Manufacture status first!')
 
+    if current_status == 'In Progress' and update_status == 'Open Status':
+        return HttpResponse('Open Status can not applicable here!')
+
     if current_status == 'Completed' and update_status == 'Open Status':
         return HttpResponse('Product already created!')
 

@@ -203,7 +203,7 @@
                                                 <th>{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
-                                                    <button onclick="myFunction()" id="generate_open" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
+                                                    <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" id="generate_open" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
 
                                                 </th>
                                             </tr>
@@ -249,7 +249,7 @@
                                                 <th>{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
-                                                    <button onclick="myFunction()" id="generate_progress" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
+                                                    <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" id="generate_progress" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
 
                                                 </th>
                                             </tr>
@@ -296,7 +296,7 @@
                                                 <th>{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
-                                                    <button onclick="myFunction({{element.product_id}}, {{element.status}})" id="generate_com" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
+                                                    <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" {{element.status}})" id="generate_com" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
 
                                                 </th>
                                             </tr>
