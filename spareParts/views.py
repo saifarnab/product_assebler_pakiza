@@ -12,7 +12,8 @@ from notifications.signals import notify
 from django.http import HttpResponseRedirect
 import barcode
 from barcode.writer import ImageWriter
-
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def login(request):
@@ -438,6 +439,11 @@ def create_product(request):
                     if flag:
                         user = User.objects.all()
                         notify.send(auth_user, recipient=user, verb=', created a product')
+                        subject = 'New Product has been Created'
+                        message = f'Product ID: {product_id}'
+                        email_from = settings.EMAIL_HOST_USER
+                        recipient_list = ['saifornab@gmail.com', 'zmislam@gmail.com']
+                        v = send_mail(subject, message, email_from, recipient_list)
                         print('hit by product created')
                         return HttpResponse("Product Created")
                     flag = True

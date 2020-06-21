@@ -97,7 +97,7 @@
             <div class="scroll-sidebar">
                <nav class="sidebar-nav">
                    <ul id="sidebarnav" class="p-t-30">
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="index.html" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{% url 'unittable' %}" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
                        <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Units </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'spareparts' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Spare Parts </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'purchases' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Purchases </span></a></li>
@@ -231,7 +231,7 @@
                               </tbody>
                             </table>
                                 <div class="card-body" style="float: right;">
-                                        <button style="margin-right: 20px;" type="submit" class="btn btn-primary">Create</button>
+                                        <button id="create_button" style="margin-right: 20px;" type="submit" class="btn btn-primary">Create</button>
                                     </div>
                             </form>
                         </div>
@@ -270,6 +270,7 @@
     <script type="text/javascript">
     $("#submitted_form").submit(function(event){
         event.preventDefault(); //prevent default action
+        document.getElementById("create_button").innerHTML = "Creating...";
         var post_url = $(this).attr("action"); //get form action url
         var request_method = $(this).attr("method"); //get form GET/POST method
         var form_data = $(this).serialize(); //Encode form elements for submission
@@ -280,6 +281,7 @@
             data : form_data
         }).done(function(response){ //
             console.log(response);
+            document.getElementById("create_button").innerHTML = "Create";
             if (response == "401") { alert("Spare parts quantity not available");}
             else if (response == "402") { alert("Product already available");}
             else {
