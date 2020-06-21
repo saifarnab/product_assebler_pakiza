@@ -282,7 +282,10 @@
             console.log(response);
             if (response == "401") { alert("Spare parts quantity not available");}
             else if (response == "402") { alert("Product already available");}
-            else { alert("Product created");}
+            else {
+                alert("Product created");
+                location.reload();
+            }
         });
     });
 

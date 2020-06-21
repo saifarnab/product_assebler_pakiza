@@ -395,8 +395,8 @@ def create_product(request):
                     current_quantity = qry_list[0][0]
                     if current_quantity is None:
                         current_quantity = 1
-                    # if quantity > current_quantity:
-                    #     return HttpResponse("401")
+                    if quantity > current_quantity:
+                        pass
                     print(product_id, unit, name, parts_invoice, barcode, partsname, parts_id, parts_box, quantity,
                           store, comment, date, parts_date, product_quantity, product_invoice)
                     if not flag:
