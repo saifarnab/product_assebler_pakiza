@@ -502,7 +502,9 @@ def change_product_status(request):
 
 
 def mark_notification_read(request):
-    qs = request.user.notifications.unread()
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
+    qs = auth_user.notifications.unread()
     qs.mark_all_as_read(request.user)
     print('hit')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
