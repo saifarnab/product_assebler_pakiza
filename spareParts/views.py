@@ -431,6 +431,7 @@ def create_product(request):
 
         except:
             print('error')
+            notify.send(request.user, recipient=user, verb=', created a product')
             return redirect(create_product)
 
     else:
