@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
@@ -9,6 +10,9 @@ from django.contrib.auth import logout
 from django.db.models import Max
 from notifications.signals import notify
 from django.http import HttpResponseRedirect
+import barcode
+from barcode.writer import ImageWriter
+
 
 
 def login(request):
@@ -229,6 +233,7 @@ def product(request):
     maxProductNo = args.aggregate(Max('product_no')).get('product_no__max')
     if maxProductNo is None:
         maxProductNo = 1
+    product_barcode_list = []
     all = []
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i + 1).exists():
@@ -250,8 +255,18 @@ def product(request):
                 'parts_list': parts,
                 'status': product[0][5],
             }
+            code39 = barcode.get('code39', product[0][1], writer=ImageWriter())
+            code39.save('code39')
+            with open("code39.png", "rb") as image_file:
+                encoded_string = base64.b64encode(image_file.read())
+            barcode_dict = {
+                'product_name': product[0][0],
+                'barcode': product[0][1],
+                'barcode_img': encoded_string.decode("utf-8")
+            }
+            product_barcode_list.append(barcode_dict)
             all.append(custom_dict)
-    print(all)
+    print(product_barcode_list)
     open_status = []
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i + 1).exists():
@@ -275,7 +290,6 @@ def product(request):
                     'status': product[0][5],
                 }
                 open_status.append(custom_dict)
-    print(open_status)
 
     in_progress = []
     for i in range(maxProductNo):
@@ -301,8 +315,6 @@ def product(request):
                     'status': product[0][5],
                 }
                 in_progress.append(custom_dict)
-    print(in_progress)
-
     completed = []
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i + 1).exists():
@@ -327,13 +339,14 @@ def product(request):
                     'status': product[0][5],
                 }
                 completed.append(custom_dict)
-    print(completed)
+
     return render(request, 'product.html', {
         'notification': notification_list,
         'all': all,
         'open_status': open_status,
         'in_progress': in_progress,
         'completed': completed,
+        'barcode': product_barcode_list,
         'user': request.session['user']})
 
 

@@ -119,14 +119,40 @@
                             <div class="card-body">
                                 <h5 class="card-title">Products:</h5>
 
-                                        <ul id="breadcrumb">
+                                        <div class="row">
+                                            <div style="width:86%">
+                                                <ul id="breadcrumb">
+                                                <li class="active" ><a style="crsor: pointer;" onclick="show_all_prod()"><span class="icon icon-home"> </span>All</a></li>
+                                                <li >
+                                                <a style="cursor: pointer;" onclick="show_open_prod()"><span class="icon icon-double-angle-right"></span> Open</a></li>
+                                                <li><a style="cursor: pointer;" onclick="show_progress_prod()"><span class="icon icon-rocket"> </span> In progress</a></li>
+                                                <li><a style="cursor: pointer;" onclick="show_complete_prod()"><span class="icon icon-check"> </span> Complete</a></li>
+                                                </ul>
+                                            </div>
+                                            <div style="width:10%; margin-top:5px">
+                                                <button class="btn btn-warning" onclick="printDiv()">Print Barcodes</button>
+                                                  <div id="printableTable" style="display:none">
+                                                    <table>
 
-                                        <li class="active" ><a style="crsor: pointer;" onclick="show_all_prod()"><span class="icon icon-home"> </span>All</a></li>
-                                        <li >
-                                        <a style="cursor: pointer;" onclick="show_open_prod()"><span class="icon icon-double-angle-right"></span> Open</a></li>
-                                        <li><a style="cursor: pointer;" onclick="show_progress_prod()"><span class="icon icon-rocket"> </span> In progress</a></li>
-                                        <li><a style="cursor: pointer;" onclick="show_complete_prod()"><span class="icon icon-check"> </span> Complete</a></li>
-                                        </ul>
+                                                      <tbody>
+                                                        <tr>
+                                                            <td style="text-align:center">
+                                                            {% for item in barcode %}
+
+                                                                    <img width="50px" height="30px" src="data:image/png;base64, {{item.barcode_img}}">
+                                                                    <p style="margin:0">{{item.barcode }}</p>
+                                                                    <p>{{item.product_name }}</p>
+
+                                                            {% endfor %}
+                                                             </td>
+                                                        </tr>
+
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                            </div>
+                                            <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+                                        </div>
                                     <br/>
 
                                         <div class="table table-responsive" id="prod_all">
@@ -452,7 +478,11 @@ function show_complete_prod (){
     document.getElementById("prod_complete").style.display = "block";
 }
 
-
+function printDiv() {
+ window.frames["print_frame"].document.body.innerHTML = document.getElementById("printableTable").innerHTML;
+ window.frames["print_frame"].window.focus();
+ window.frames["print_frame"].window.print();
+}
 
     </script>
 
