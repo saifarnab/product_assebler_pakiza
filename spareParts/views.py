@@ -437,14 +437,14 @@ def create_product(request):
                     count = 1
                     if flag:
                         user = User.objects.all()
-                        notify.send(request.user, recipient=user, verb=', created a product')
+                        notify.send(auth_user, recipient=user, verb=', created a product')
                         print('hit by product created')
                         return HttpResponse("Product Created")
                     flag = True
 
         except:
             print('error')
-            notify.send(request.user, recipient=user, verb=', created a product')
+            notify.send(auth_user, recipient=user, verb=', created a product')
             return redirect(create_product)
 
     else:
