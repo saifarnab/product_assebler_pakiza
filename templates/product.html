@@ -17,6 +17,7 @@
     <link href="{% static 'dist/css/style.min.css' %}" rel="stylesheet">
     <link href="{% static 'dist/css/breadcrumb.css' %}" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Libre Barcode 39' rel='stylesheet'>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -153,7 +154,7 @@
                                                         {% endfor %}
                                                     </ul>
                                                 </th>
-                                                <th>{{element.barcode}}</th>
+                                                <th style="font-family: 'Libre Barcode 39';font-size: 22px;">{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
                                                     <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" id="generate_all" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
