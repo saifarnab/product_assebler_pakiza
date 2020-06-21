@@ -21,5 +21,7 @@ urlpatterns = [
     path('createproduct/', views.create_product, name='createproduct'),
     path('markread', views.mark_notification_read, name='markread'),
     path('notifications', views.all_notification, name='notifications'),
+    path('email', views.email_settings, name='email'),
+    path('addemail', views.add_email, name='addemail'),
 ]
 

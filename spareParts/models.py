@@ -56,11 +56,8 @@ class Product(models.Model):
     parts_date = models.DateTimeField(auto_now=True)
 
 
-# class Product(models.Model):
-#     product_id = models.BigAutoField(primary_key=True)
-#     ram = models.BigIntegerField(null=True, blank=True)
-#     hdd = models.BigIntegerField(null=True, blank=True)
-#     ssd = models.BigIntegerField(null=True, blank=True)
-#     screen = models.BigIntegerField(null=True, blank=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
+class EmailSettings(models.Model):
+    email_id = models.BigAutoField(primary_key=True)
+    email_name = models.CharField(max_length=288, null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SparePart, Unit, Purchase, Product
+from .models import SparePart, Unit, Purchase, Product, EmailSettings
 # Register your models here.
 
 
@@ -27,13 +27,15 @@ class ProductAdmin(admin.ModelAdmin):
         'product_barcode', 'parts_id', 'parts_name', 'parts_unit', 'parts_box', 'parts_quantity', 'parts_invoice', 'parts_date'
     ]
 
-# class ProductAdmin(admin.ModelAdmin):
-#     list_display = [
-#         'product_id', 'ram', 'hdd', 'ssd', 'screen', 'created_at', 'updated_at'
-#     ]
+
+class EmailAdmin(admin.ModelAdmin):
+    list_display = [
+        'email_id', 'email_name', 'created_at', 'updated_at'
+    ]
 
 
 admin.site.register(SparePart, SparePartAdmin)
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(Purchase, PurchaseAdmin)
 admin.site.register(Product, ProductAdmin)
+admin.site.register(EmailSettings, EmailAdmin)

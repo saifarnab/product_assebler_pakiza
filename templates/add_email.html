@@ -134,7 +134,7 @@
         <!-- ============================================================== -->
          <aside class="left-sidebar" data-sidebarbg="skin5">
             <div class="scroll-sidebar">
-               <nav class="sidebar-nav">
+                <nav class="sidebar-nav">
                    <ul id="sidebarnav" class="p-t-30">
                       <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;color: gray;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Dashboard </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Units </span></a></li>
@@ -152,28 +152,15 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="col-md-12">
-                        <h4 class="card-title">Create Spare Parts:</h4>
+                        <h4 class="card-title">Add Email:</h4>
                         <div class="card">
-                            <form class="form-horizontal" method="post" action="{% url 'addspareparts' %}">
+                            <form class="form-horizontal" method="post" action="{% url 'addemail' %}">
                                  {% csrf_token %}
                                 <div class="card-body">
                                     <div class="form-group row">
-                                        <label for="name" class="col-sm-3 text-right control-label col-form-label">Spare Part Name</label>
-                                        <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="text" name="name" class="form-control" id="name" placeholder="Spare Part Name Here">
-                                        </div>
-                                        <label  class="col-sm-3 text-right control-label col-form-label">Spare Part Unit</label>
-                                        <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <select name="unit" class="form-control">
-                                                <option value="-1">------</option>
-                                                {% for item in data %}
-                                                    <option value={{item.unit_name}}>{{item.unit_name}}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <label for="description" class="col-sm-3 text-right control-label col-form-label">Spare Part Description</label>
-                                        <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <textarea type="text" name="description" class="form-control" id="description" placeholder="Unit Description Here"></textarea>
+                                        <label for="name" class="col-sm-3 text-right control-label col-form-label">Email ID</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="name" class="form-control" id="name" placeholder="Email ID Here">
                                         </div>
                                         <div class="col-sm-3"></div>
                                         <div class="col-sm-3">

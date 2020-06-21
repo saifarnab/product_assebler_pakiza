@@ -95,7 +95,7 @@
         </header>
          <aside class="left-sidebar" data-sidebarbg="skin5">
             <div class="scroll-sidebar">
-               <nav class="sidebar-nav">
+              <nav class="sidebar-nav">
                    <ul id="sidebarnav" class="p-t-30">
                       <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;color: gray;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Dashboard </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Units </span></a></li>
@@ -103,7 +103,8 @@
                        <li class="sidebar-item"><a href="{% url 'purchases' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Purchases </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'product' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Products </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'notifications' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Notifications </span></a></li>
-                    </ul>
+                       <li class="sidebar-item"><a href="{% url 'email' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Eamil Settings </span></a></li>
+                   </ul>
                 </nav>
             </div>
         </aside>
@@ -146,7 +147,7 @@
                                         </div>
                                         <label for="barcode" class="col-sm-3 text-right control-label col-form-label" disabled>Barcode</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
-                                            <input type="text" name="barcode" class="form-control" id="barcode" placeholder="Product Barcode Here">
+                                            <input type="number" name="barcode" class="form-control" id="barcode" placeholder="Product Barcode Here">
                                         </div>
                                         <label for="store" class="col-sm-3 text-right control-label col-form-label" disabled>Store</label>
                                         <div class="col-sm-9" style="margin-bottom: 15px">
