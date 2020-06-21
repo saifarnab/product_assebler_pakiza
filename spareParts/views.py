@@ -505,7 +505,7 @@ def mark_notification_read(request):
     user = request.session['user']
     auth_user = User.objects.get(username=user)
     qs = auth_user.notifications.unread()
-    qs.mark_all_as_read(request.user)
+    qs.mark_all_as_read(auth_user)
     print('hit')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
