@@ -169,7 +169,6 @@ body {
             <div class="scroll-sidebar">
                 <nav class="sidebar-nav">
                    <ul id="sidebarnav" class="p-t-30">
-                      <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;color: gray;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Dashboard </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Units </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'spareparts' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Spare Parts </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'purchases' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Purchases </span></a></li>
@@ -195,7 +194,7 @@ body {
                                                 <th>SL</th>
                                                 <th>Email ID</th>
                                                 <th>Created Date</th>
-<!--                                                <th>Action</th>-->
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -204,10 +203,9 @@ body {
                                                 <td> {{ forloop.counter }} </td>
                                                 <td> {{ item.email_name }} </td>
                                                 <td> {{ item.created_at }} </td>
-<!--                                                <td>-->
-<!--                                                    <a class="btn btn-sm btn-warning">Edit</a>-->
-<!--                                                    <a class="btn btn-sm btn-danger">Delete</a>-->
-<!--                                                </td>-->
+                                                <td>
+                                                    <a href="{% url 'deleteemail' item.email_id %}" class="btn btn-sm btn-danger">Delete</a>
+                                                </td>
                                             </tr>
                                         {% endfor %}
                                         </tbody>
@@ -216,7 +214,7 @@ body {
                                                 <th>ID</th>
                                                 <th>Unit Name</th>
                                                 <th>Created Date</th>
-<!--                                                <th>Action</th>-->
+                                                <th>Action</th>
                                             </tr>
                                         </tfoot>
                                     </table>

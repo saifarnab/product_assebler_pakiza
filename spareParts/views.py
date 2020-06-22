@@ -217,7 +217,6 @@ def get_unit_stock(request):
     if qry_list[0][0] is None:
         stock = 0
     data = str(qry_list[0][1]) + ', ' + str(stock) + ', ' + str(qry_list[0][2])
-    print(data)
     return HttpResponse(data)
 
 
@@ -438,7 +437,7 @@ def create_product(request):
                     count = 1
                     if flag:
                         user = User.objects.all()
-                        notify.send(auth_user, recipient=user, verb=', created a product')
+                        notify.send(auth_user, recipient=user, verb=f', create a product. product ID: {product_id}')
                         subject = 'New Product has been Created'
                         message = f'Product ID: {product_id}'
                         email_from = settings.EMAIL_HOST_USER
@@ -453,7 +452,7 @@ def create_product(request):
 
         except:
             print('error')
-            notify.send(auth_user, recipient=user, verb=', created a product')
+            notify.send(auth_user, recipient=user, verb=f', create a product. product ID: {product_id},')
             return redirect(create_product)
 
     else:
@@ -468,7 +467,7 @@ def change_product_status(request):
     for item in list(notifications):
         notification_list.append(str(item))
     current = request.GET['current'].split(']')
-    print(current)
+    user = User.objects.all()
     product_id = current[0]
     current_status = current[1]
     update_status = request.GET['update']
@@ -507,8 +506,12 @@ def change_product_status(request):
         for parts in product_list:
             parts_quantity = list(SparePart.objects.filter(parts_id=int(parts[0])).values_list('quantity'))
             if parts_quantity[0][0] is None:
+                notify.send(auth_user, recipient=user,
+                            verb=f', spare parts quantity is not enough. product ID: {product_id},')
                 return HttpResponse('Spare parts quantity is not enough!')
             if parts_quantity[0][0] < parts[1]:
+                notify.send(auth_user, recipient=user,
+                            verb=f', spare parts quantity is not enough. product ID: {product_id},')
                 return HttpResponse('Spare parts quantity is not enough!')
 
         for parts in product_list:
@@ -516,9 +519,11 @@ def change_product_status(request):
             SparePart.objects.filter(parts_id=int(parts[0])).update(quantity=parts_quantity[0][0] - parts[1])
 
         Product.objects.filter(product_id=product_id).update(status=update_status)
+        notify.send(auth_user, recipient=user, verb=f', update product status to in progress. product ID: {product_id},')
 
     if current_status == 'In Progress' and update_status == 'Completed':
         Product.objects.filter(product_id=product_id).update(status=update_status)
+        notify.send(auth_user, recipient=user, verb=f', update product status to completed. product ID: {product_id},')
 
     return HttpResponse('Status Updated!')
 
@@ -537,18 +542,51 @@ def product_tabel(request):
 
 
 def all_notification(request):
+    if 'user' not in request.session:
+        return redirect('login')
     user = request.session['user']
     auth_user = User.objects.get(username=user)
+
+    notification_list = []
+    notifications = auth_user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
+
     all_notification_list = []
     notifications_unread = auth_user.notifications.unread()
     notifications_read = auth_user.notifications.read()
 
     for item in list(notifications_unread):
-        all_notification_list.append(str(item))
+        data = str(item)
+        if 'create' in data:
+            style = 'table-primary'
+        elif 'progress' in data:
+            style = 'table-warning'
+        elif 'enough' in data:
+            style = 'table-danger'
+        elif 'completed' in data:
+            style = 'table-success'
+        all_notification_list.append({
+            'nofity': data,
+            'style': style
+        })
     for item in list(notifications_read):
-        all_notification_list.append(str(item))
+        data = str(item)
+        if 'create' in data:
+            style = 'table-primary'
+        elif 'progress' in data:
+            style = 'table-warning'
+        elif 'enough' in data:
+            style = 'table-danger'
+        elif 'completed' in data:
+            style = 'table-success'
+        all_notification_list.append({
+            'nofity': data,
+            'style': style
+        })
 
-    return render(request, 'notifications.html', {'data': all_notification_list})
+    print(all_notification_list)
+    return render(request, 'notifications.html', {'notification': notification_list, 'data': all_notification_list})
 
 
 def email_settings(request):
@@ -587,3 +625,14 @@ def add_email(request):
             EmailSettings.objects.create(email_name=email)
             return redirect(email_settings)
     return render(request, 'add_email.html', {'notification': notification_list, 'user': request.session['user']})
+
+
+def delete_email(request, id):
+    if 'user' not in request.session:
+        return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
+    if auth_user is None:
+        return redirect('login')
+    EmailSettings.objects.filter(email_id=int(id)).delete()
+    return redirect(email_settings)

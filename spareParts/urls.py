@@ -6,7 +6,6 @@ urlpatterns = [
     path('', views.login, name='login'),
     path('authentication/', views.authentication, name='authentication'),
     path('sparepart/', views.add_spare_part, name='sparepart'),
-    # path('addproduct/', views.add_product, name='addproduct'),
     path('logout/', views.logout_session, name='logout'),
     path('producttable', views.product_tabel, name='producttable'),
     path('unittable', views.unit_table, name='unittable'),
@@ -23,5 +22,6 @@ urlpatterns = [
     path('notifications', views.all_notification, name='notifications'),
     path('email', views.email_settings, name='email'),
     path('addemail', views.add_email, name='addemail'),
+    path(r'^deleteemail/<int:id>/', views.delete_email, name='deleteemail'),
 ]
 

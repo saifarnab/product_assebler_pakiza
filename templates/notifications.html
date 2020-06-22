@@ -124,7 +124,6 @@
             <div class="scroll-sidebar">
                 <nav class="sidebar-nav">
                    <ul id="sidebarnav" class="p-t-30">
-                      <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;color: gray;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Dashboard </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Units </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'spareparts' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Spare Parts </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'purchases' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Purchases </span></a></li>
@@ -143,7 +142,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">Notifications:</h5>
                                 <div class="table-responsive">
-                                    <table id="zero_config" class="table table-striped table-bordered">
+                                    <table id="zero_config" class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>SL</th>
@@ -153,9 +152,12 @@
                                         <tbody>
 
                                         {% for item in data %}
-                                            <tr>
+                                            <tr class="{{item.style}}">
                                                 <td> {{ forloop.counter }} </td>
-                                                <td> {{ item }} </td>
+                                                <td> {{ item.nofity }} </td>
+                                                <td>
+                                                    <button onclick="myFunction('{{item.nofity}}')"  id="generate_com" type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"> Send Email</button>
+                                                </td>
                                             </tr>
 
                                         {% endfor %}
@@ -174,38 +176,42 @@
                         </div>
                     </div>
                 </div>
-                <!-- ============================================================== -->
-                <!-- End PAge Content -->
-                <!-- ============================================================== -->
-                <!-- ============================================================== -->
-                <!-- Right sidebar -->
-                <!-- ============================================================== -->
-                <!-- .right-sidebar -->
-                <!-- ============================================================== -->
-                <!-- End Right sidebar -->
-                <!-- ============================================================== -->
-            </div>
-            <!-- ============================================================== -->
-            <!-- End Container fluid  -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- footer -->
-            <!-- ============================================================== -->
 
-            <!-- ============================================================== -->
-            <!-- End footer -->
-            <!-- ============================================================== -->
+            </div>
+
         </div>
-        <!-- ============================================================== -->
-        <!-- End Page wrapper  -->
-        <!-- ============================================================== -->
+
+        <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Update Product Status</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <form>
+               <input type="hidden" id="pass_val">
+               <label for="container">Status Choices:</label>
+               <div id="container"></div>
+           </form>
+              <p style="color:red" id="response">
+
+              </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" onclick="changeStatus()" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- End Wrapper -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- All Jquery -->
-    <!-- ============================================================== -->
+
+
+    </div>
+
     <script src="{% static 'assets/libs/jquery/dist/jquery.min.js' %}"></script>
     <!-- Bootstrap tether Core JavaScript -->
     <script src="{% static 'assets/libs/popper.js/dist/umd/popper.min.js' %}"></script>
@@ -229,6 +235,27 @@
          *       Basic Table                   *
          ****************************************/
         $('#zero_config').DataTable();
+
+        function myFunction(x) {
+          document.getElementById('container').innerHTML = "";
+          document.getElementById('response').innerHTML = "";
+          var product_id = x;
+          console.log(x);
+          var values = ["Open Status", "Manufacture", "Complete"];
+          var select = document.createElement("select");
+          select.name = "status";
+          select.id = "status";
+          select.classList.add("form-control");
+          for (const val of values) {
+            var option = document.createElement("option");
+            option.value = val;
+            option.text = val.charAt(0).toUpperCase() + val.slice(1);
+            select.appendChild(option);
+          }
+          document.getElementById("container").appendChild(select);
+          document.getElementById("pass_val").value = x;
+
+    }
     </script>
 
 </body>
