@@ -161,17 +161,23 @@
                                                   <div id="tblCustomers" style="display:none">
                                                       <table id="" cellspacing="0" cellpadding="0">
                                                             <tr>
-                                                                <th>Product Barcode</th>
-                                                                <th>Barcode Value</th>
+                                                                <th>Product No</th>
                                                                 <th>Product Name</th>
+                                                                <th>Parts List</th>
                                                             </tr>
-                                                          {% for item in barcode %}
+                                                          {% for element in all %}
                                                             <tr>
-                                                                <td> <img width="50px" height="20px;" src="data:image/png;base64, {{item.barcode_img}}"> </td>
-                                                                <td>{{item.barcode}}</td>
-                                                                <td>{{item.product_name}}</td>
+                                                                <td>{{element.product_id}}</td>
+                                                                <td>{{element.product_name}}</td>
+                                                                <td>
+                                                                    <ul>
+                                                                        {% for item in element.parts_list %}
+                                                                        <li>{{ item.parts_name }} - {{ item.quantity }} {{ item.unit }}</li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                </td>
                                                             </tr>
-                                                          {% endfor %}
+                                                        {% endfor %}
                                                         </table>
                                                   </div>
 
@@ -202,7 +208,6 @@
                                                 <th>Product No</th>
                                                 <th>Product Name</th>
                                                 <th>Parts List</th>
-                                                <th>Product Barcode</th>
                                                 <th>Status &Action</th>
 
                                             </tr>
@@ -219,8 +224,6 @@
                                                         {% endfor %}
                                                     </ul>
                                                 </th>
-                                                <th style="font-family: 'Libre Barcode 39';font-size: 26px;">{{element.barcode}}</th>
-                                                <!--th>{{element.status}}</!--th-->
                                                 <th>
                                                     <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" id="generate_all" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
 
@@ -233,7 +236,6 @@
                                                 <th>Product No</th>
                                                 <th>Product Name</th>
                                                 <th>Parts List</th>
-                                                <th>Product Barcode</th>
                                                 <th>Status & Action</th>
                                             </tr>
                                         </tfoot>
