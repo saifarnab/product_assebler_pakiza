@@ -1,0 +1,134 @@
+
+#breadcrumb {
+  list-style: none;
+  display: inline-flex;
+  padding:5px;
+}
+#breadcrumb .icon {
+  font-size: 14px;
+}
+#breadcrumb li {
+  float: left;
+}
+
+#breadcrumb .all-prod {
+  background: blue;
+}
+
+#breadcrumb .open-prod {
+  background: cornflowerblue;
+}
+#breadcrumb .progress-prod {
+  background: yellow;
+  color: black;
+}
+#breadcrumb .complete-prod {
+  background: green;
+}
+
+
+#breadcrumb li a {
+  color: #FFF;
+  display: block;
+  background: #3498db;
+  text-decoration: none;
+  position: relative;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 10px 0 5px;
+  text-align: center;
+  margin-right: 23px;
+}
+#breadcrumb .complete-prod::before{
+  border-color: green !important;
+  border-left-color: transparent !important;
+}
+
+#breadcrumb .open-prod::before{
+  border-color: cornflowerblue !important;
+  border-left-color: transparent !important;
+}
+
+#breadcrumb .progress-prod::before{
+  border-color: yellow !important;
+  border-left-color: transparent !important;
+}
+#breadcrumb .progress-prod::after{
+
+  border-left-color: yellow !important;
+}
+
+#breadcrumb .open-prod::after{
+
+  border-left-color: cornflowerblue !important;
+}
+
+#breadcrumb .all-prod::after{
+
+  border-left-color: blue !important;
+}
+
+#breadcrumb li:nth-child(even) a:after {
+  border-left-color: white;
+}
+#breadcrumb li:first-child a {
+  padding-left: 15px;
+  -moz-border-radius: 4px 0 0 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px 0 0 4px;
+}
+#breadcrumb li:first-child a:before {
+  border: none;
+}
+#breadcrumb li:last-child a {
+  padding-right: 15px;
+  -moz-border-radius: 0 4px 4px 0;
+  -webkit-border-radius: 0;
+  border-radius: 0 4px 4px 0;
+}
+#breadcrumb li:last-child a:after {
+  border: none;
+}
+#breadcrumb li a:before, #breadcrumb li a:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  border: 0 solid white;
+  border-width: 20px 10px;
+  width: 0;
+  height: 0;
+}
+#breadcrumb li a:before {
+  left: -20px;
+  border-left-color: transparent;
+}
+#breadcrumb li a:after {
+  left: 100%;
+  border-color: transparent;
+  border-left-color: white;
+}
+#breadcrumb li a:hover {
+  background: #e6e6e6;
+  color: black;
+}
+
+#breadcrumb li a:hover:before {
+  border-color: #e6e6e6 !important;
+  border-left-color: transparent !important;
+}
+
+#breadcrumb li a:hover:after {
+  border-left-color: #e6e6e6 !important;
+}
+
+
+  #prod_open {
+    display: none;
+  }
+  #prod_progress {
+    display: none;
+  }
+  #prod_complete {
+    display: none;
+  }
+  #prod_all {display: block;}
