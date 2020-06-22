@@ -49,7 +49,8 @@ def unit_table(request):
     for content in unit:
         linked_content.append(content.__dict__)
     print(notification_list)
-    return render(request, 'tables.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
+    return render(request, 'tables.html',
+                  {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def add_unit(request):
@@ -86,7 +87,8 @@ def spare_parts_table(request):
     for content in parts:
         linked_content.append(content.__dict__)
     print(linked_content)
-    return render(request, 'spare_parts_tables.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
+    return render(request, 'spare_parts_tables.html',
+                  {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def add_spare_part(request):
@@ -118,7 +120,8 @@ def add_spare_part(request):
             message = 'Name and Unit can not empty'
             return render(request, 'add_spare_parts.html',
                           {'data': linked_content, 'user': request.session['user'], 'message': message})
-    return render(request, 'add_spare_parts.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
+    return render(request, 'add_spare_parts.html',
+                  {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def purchase(request):
@@ -197,7 +200,8 @@ def purchase_parts(request):
         while True:
             break
         print(val)
-    return render(request, 'purchase_spare_parts.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
+    return render(request, 'purchase_spare_parts.html',
+                  {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def get_unit_stock(request):
@@ -238,8 +242,9 @@ def product(request):
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i + 1).exists():
             product = list(
-                Product.objects.filter(product_no=i+1).values_list("product_name", "product_barcode", "parts_name",
-                                                                     "parts_quantity", "parts_unit", "status", "product_id",))
+                Product.objects.filter(product_no=i + 1).values_list("product_name", "product_barcode", "parts_name",
+                                                                     "parts_quantity", "parts_unit", "status",
+                                                                     "product_id", ))
             parts = []
             for item in range(len(product)):
                 thisdict = {
@@ -271,8 +276,9 @@ def product(request):
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i + 1).exists():
             product = list(
-                Product.objects.filter(product_no=i+1).values_list("product_name", "product_barcode", "parts_name",
-                                                                     "parts_quantity", "parts_unit", "status", "product_id",))
+                Product.objects.filter(product_no=i + 1).values_list("product_name", "product_barcode", "parts_name",
+                                                                     "parts_quantity", "parts_unit", "status",
+                                                                     "product_id", ))
             if product[0][5] == 'Open Status':
                 parts = []
                 for item in range(len(product)):
@@ -420,7 +426,8 @@ def create_product(request):
                             check_list.append(item[0])
                     if flag:
                         print('hit to create')
-                        Product.objects.create(product_no=maxProductNo+1, product_id=product_id, parts_unit=unit, product_name=name,
+                        Product.objects.create(product_no=maxProductNo + 1, product_id=product_id, parts_unit=unit,
+                                               product_name=name,
                                                parts_invoice=parts_invoice,
                                                product_barcode=barcode, parts_name=partsname, parts_id=parts_id,
                                                parts_box=parts_box,
@@ -456,7 +463,8 @@ def create_product(request):
             return redirect(create_product)
 
     else:
-        return render(request, 'create_product.html', {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
+        return render(request, 'create_product.html',
+                      {'notification': notification_list, 'data': linked_content, 'user': request.session['user']})
 
 
 def change_product_status(request):
@@ -519,7 +527,8 @@ def change_product_status(request):
             SparePart.objects.filter(parts_id=int(parts[0])).update(quantity=parts_quantity[0][0] - parts[1])
 
         Product.objects.filter(product_id=product_id).update(status=update_status)
-        notify.send(auth_user, recipient=user, verb=f', update product status to in progress. product ID: {product_id},')
+        notify.send(auth_user, recipient=user,
+                    verb=f', update product status to in progress. product ID: {product_id},')
 
     if current_status == 'In Progress' and update_status == 'Completed':
         Product.objects.filter(product_id=product_id).update(status=update_status)
@@ -636,3 +645,24 @@ def delete_email(request, id):
         return redirect('login')
     EmailSettings.objects.filter(email_id=int(id)).delete()
     return redirect(email_settings)
+
+
+def get_email_list(request):
+    email = list(EmailSettings.objects.all().values_list('email_name'))
+    email_str = ""
+    for item in email:
+        email_str = email_str + str(item[0]) + ","
+    print(email_str[:-1])
+    return HttpResponse(email_str[:-1])
+
+
+def email_sent(request):
+    text = request.GET['text']
+    receiver = request.GET['sender']
+    receiver_list = []
+    receiver_list.append(receiver)
+    print(receiver_list)
+    subject = 'Mail from ABC organization'
+    email_from = settings.EMAIL_HOST_USER
+    v = send_mail(subject, str(text), email_from, receiver_list)
+    return HttpResponse('ok')

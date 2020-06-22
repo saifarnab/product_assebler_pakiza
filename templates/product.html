@@ -122,7 +122,7 @@
                                         <div class="row">
                                             <div style="width:86%">
                                                 <ul id="breadcrumb">
-                                                <li class="active" ><a style="crsor: pointer;" onclick="show_all_prod()"><span class="icon icon-home"> </span>All</a></li>
+                                                <li class="active" ><a style="cursor: pointer;" onclick="show_all_prod()"><span class="icon icon-home"> </span>All</a></li>
                                                 <li >
                                                 <a style="cursor: pointer;" onclick="show_open_prod()"><span class="icon icon-double-angle-right"></span> Open</a></li>
                                                 <li><a style="cursor: pointer;" onclick="show_progress_prod()"><span class="icon icon-rocket"> </span> In progress</a></li>
@@ -180,7 +180,7 @@
                                                         {% endfor %}
                                                     </ul>
                                                 </th>
-                                                <th style="font-family: 'Libre Barcode 39';font-size: 22px;">{{element.barcode}}</th>
+                                                <th style="font-family: 'Libre Barcode 39';font-size: 26px;">{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
                                                     <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" id="generate_all" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
@@ -227,7 +227,7 @@
                                                         {% endfor %}
                                                     </ul>
                                                 </th>
-                                                <th>{{element.barcode}}</th>
+                                                <th style="font-family: 'Libre Barcode 39';font-size: 26px;">{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
                                                     <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" id="generate_open" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
@@ -273,7 +273,7 @@
                                                         {% endfor %}
                                                     </ul>
                                                 </th>
-                                                <th>{{element.barcode}}</th>
+                                                <th style="font-family: 'Libre Barcode 39';font-size: 26px;">{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
                                                     <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" id="generate_progress" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
@@ -320,7 +320,7 @@
                                                         {% endfor %}
                                                     </ul>
                                                 </th>
-                                                <th>{{element.barcode}}</th>
+                                                <th style="font-family: 'Libre Barcode 39';font-size: 26px;">{{element.barcode}}</th>
                                                 <!--th>{{element.status}}</!--th-->
                                                 <th>
                                                     <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" {{element.status}})" id="generate_com" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>

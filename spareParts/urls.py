@@ -23,5 +23,7 @@ urlpatterns = [
     path('email', views.email_settings, name='email'),
     path('addemail', views.add_email, name='addemail'),
     path(r'^deleteemail/<int:id>/', views.delete_email, name='deleteemail'),
+    path(r'^emaillist/$', views.get_email_list, name='emaillist'),
+    path(r'^emailsent/$', views.email_sent, name='emailsent'),
 ]
 

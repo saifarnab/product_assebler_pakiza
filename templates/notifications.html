@@ -147,6 +147,7 @@
                                             <tr>
                                                 <th>SL</th>
                                                 <th>Notifications</th>
+                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -167,6 +168,7 @@
                                             <tr>
                                                 <th>SL</th>
                                                 <th>Notifications</th>
+                                                <th>Action</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -186,7 +188,7 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Update Product Status</h5>
+            <h5 class="modal-title" id="exampleModalLongTitle">Send Email</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -194,7 +196,7 @@
           <div class="modal-body">
            <form>
                <input type="hidden" id="pass_val">
-               <label for="container">Status Choices:</label>
+               <label for="container">Email Choices:</label>
                <div id="container"></div>
            </form>
               <p style="color:red" id="response">
@@ -203,7 +205,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" onclick="changeStatus()" class="btn btn-primary">Save changes</button>
+            <button id="sending" type="button" onclick="changeStatus()" class="btn btn-primary">Send</button>
           </div>
         </div>
       </div>
@@ -241,21 +243,60 @@
           document.getElementById('response').innerHTML = "";
           var product_id = x;
           console.log(x);
-          var values = ["Open Status", "Manufacture", "Complete"];
-          var select = document.createElement("select");
-          select.name = "status";
-          select.id = "status";
-          select.classList.add("form-control");
-          for (const val of values) {
-            var option = document.createElement("option");
-            option.value = val;
-            option.text = val.charAt(0).toUpperCase() + val.slice(1);
-            select.appendChild(option);
-          }
-          document.getElementById("container").appendChild(select);
-          document.getElementById("pass_val").value = x;
+           $.ajax(
+            {
+                type:"GET",
+                url: "{% url 'emaillist' %}",
+                data:{
+                         current:x,
+                         update:status
+                },
+                success: function( data )
+                {
+                    var res = data.split(",");
+                    var select = document.createElement("select");
+                      select.name = "status";
+                      select.id = "status";
+                      select.classList.add("form-control");
+                      for (const val of res) {
+                        var option = document.createElement("option");
+                        option.value = val;
+                        option.text = val.charAt(0).toLowerCase() + val.slice(1);
+                        select.appendChild(option);
+                      }
+                      document.getElementById("container").appendChild(select);
+                      document.getElementById("pass_val").value = x;
+                            }
+             })
+
+
 
     }
+    function changeStatus() {
+        document.getElementById('sending').innerHTML = "Sending...";
+      var x = document.getElementById("pass_val").value;
+      var status = document.getElementById("status");
+      var status = status.options[status.selectedIndex].value;
+      console.log(x, status);
+      $.ajax(
+        {
+            type:"GET",
+            url: "{% url 'emailsent' %}",
+            data:{
+                     text:x,
+                     sender:status
+            },
+            success: function( data )
+            {   document.getElementById('sending').innerHTML = "Sent";
+                alert('Email sent');
+                $('#exampleModalCenter').modal('hide');
+            }
+         })
+
+
+    }
+
+
     </script>
 
 </body>
