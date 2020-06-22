@@ -201,14 +201,13 @@
                                         <tbody>
 
                                         {% for item in data %}
-                                            <tr class="table-primary" style="background:{{ item.back }}; color:{{ item.color }}">
+                                            <tr class={{item.style}}>
                                                 <td style="background:{{ item.back }}; color:{{ item.color }}"> {{ forloop.counter }} </td>
                                                 <td style="background:{{ item.back }}; color:{{ item.color }}"> {{ item.nofity }} </td>
                                                 <td style="background:{{ item.back }}; color:{{ item.color }}">
                                                     <button onclick="myFunction('{{item.nofity}}')"  id="generate_com" type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"> Send Email</button>
                                                 </td>
                                             </tr>
-
                                         {% endfor %}
 
                                         </tbody>

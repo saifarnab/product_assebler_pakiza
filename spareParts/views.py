@@ -568,40 +568,30 @@ def all_notification(request):
     for item in list(notifications_unread):
         data = str(item)
         if 'create' in data:
-            back = 'yellow'
-            color = 'black'
+            style = 'table-primary'
         elif 'progress' in data:
-            back = 'blue'
-            color = 'white'
+            style = 'table-info'
         elif 'enough' in data:
-            back = 'red'
-            color = 'white'
+            style = 'table-danger'
         elif 'completed' in data:
-            back = 'green'
-            color = 'white'
+            style = 'table-success'
         all_notification_list.append({
             'nofity': data,
-            'back': back,
-            'color': color
+            'style' : style,
         })
     for item in list(notifications_read):
         data = str(item)
         if 'create' in data:
-            back = 'yellow'
-            color = 'black'
+            style = 'table-primary'
         elif 'progress' in data:
-            back = 'blue'
-            color = 'white'
+            style = 'table-info'
         elif 'enough' in data:
-            back = 'red'
-            color = 'white'
+            style = 'table-danger'
         elif 'completed' in data:
-            back = 'green'
-            color = 'white'
+            style = 'table-success'
         all_notification_list.append({
             'nofity': data,
-            'back': back,
-            'color': color
+            'style': style,
         })
 
     print(all_notification_list)
