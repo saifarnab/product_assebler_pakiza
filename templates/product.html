@@ -167,15 +167,19 @@
                                                             </tr>
                                                           {% for element in all %}
                                                             <tr>
-                                                                <td>{{element.product_id}}</td>
-                                                                <td>{{element.product_name}}</td>
-                                                                <td>
+                                                                <th>{{element.product_id}}</th>
+                                                                <th>{{element.product_name}}</th>
+                                                                <th>
                                                                     <ul>
                                                                         {% for item in element.parts_list %}
                                                                         <li>{{ item.parts_name }} - {{ item.quantity }} {{ item.unit }}</li>
                                                                         {% endfor %}
                                                                     </ul>
-                                                                </td>
+                                                                </th>
+                                                                <th>
+                                                                    <button onclick="myFunction('{{element.product_id}}', '{{element.status}}')" id="generate_all" data-id={{element.product_id}} data-status={{element.status}} type="button" class="open-homeEvents btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">{{element.status}} &nbsp;| &nbsp; Update</button>
+
+                                                                </th>
                                                             </tr>
                                                         {% endfor %}
                                                         </table>

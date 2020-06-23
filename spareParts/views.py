@@ -497,7 +497,7 @@ def change_product_status(request):
         return HttpResponse('Select different status!')
 
     if current_status == 'Open Status' and update_status == 'Completed':
-        return HttpResponse('Need to choose Manufacture status first!')
+        return HttpResponse('Need to choose In Progress status first!')
 
     if current_status == 'In Progress' and update_status == 'Open Status':
         return HttpResponse('Open Status can not applicable here!')
