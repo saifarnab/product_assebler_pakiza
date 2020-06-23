@@ -16,10 +16,32 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 
+# check user valid or not
+def check_valid_user(request):
+    if 'user' not in request.session:
+        return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
+    if auth_user is None:
+        return redirect('login')
+
+
+# unread notification header list
+def get_header_notification_list(request):
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
+    notification_list = []
+    notifications = auth_user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
+    return notification_list
+
+
 def login(request):
     return render(request, 'authentication-login.html', {})
 
 
+# check user login auth
 def authentication(request):
     email = request.POST.get('email', '')
     password = request.POST.get('password', '')
@@ -31,19 +53,14 @@ def authentication(request):
 
 
 def logout_session(request):
+    check_valid_user(request)
     logout(request)
     return redirect('login')
 
 
 def unit_table(request):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
     unit = Unit.objects.all()
     linked_content = []
     for content in unit:
@@ -54,14 +71,8 @@ def unit_table(request):
 
 
 def add_unit(request):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
     if request.POST:
         unit = request.POST.get('unit', '')
         if unit != '':
@@ -74,14 +85,8 @@ def add_unit(request):
 
 
 def spare_parts_table(request):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
     parts = SparePart.objects.all()
     linked_content = []
     for content in parts:
@@ -92,19 +97,13 @@ def spare_parts_table(request):
 
 
 def add_spare_part(request):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
+    # to show unit dropdown
     linked_content = []
     unit = Unit.objects.all()
     for content in unit:
         linked_content.append(content.__dict__)
-    print(linked_content)
     if request.method == "POST":
         name = request.POST.get('name', '')
         unit = request.POST.get('unit', '')
@@ -125,12 +124,8 @@ def add_spare_part(request):
 
 
 def purchase(request):
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications_unread = auth_user.notifications.unread()
-    for item in list(notifications_unread):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
     if 'user' not in request.session:
         return redirect('login')
     purchase = Purchase.objects.all()
@@ -144,14 +139,8 @@ def purchase(request):
 
 
 def purchase_parts(request):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
     linked_content = []
     parts = SparePart.objects.all()
     for content in parts:
@@ -183,7 +172,6 @@ def purchase_parts(request):
                     total_quantity = current_quantity + quantity
                     SparePart.objects.filter(parts_id=parts_id).update(quantity=total_quantity)
                     try:
-                        print(supplier, challan, parts_id, quantity)
                         Purchase.objects.create(supplier=supplier, challan_no=challan, parts_id=parts_id,
                                                 quantity=quantity, box=box, created_at=date)
                     except:
@@ -191,8 +179,6 @@ def purchase_parts(request):
                     check += 1
                 count += 1
                 if check == val:
-                    break
-                if count > 50:
                     break
         except:
             print('error in val')
@@ -205,12 +191,7 @@ def purchase_parts(request):
 
 
 def get_unit_stock(request):
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
     data = int(request.GET['id'])
     if data < 1:
         data = 'Spare Part Unit Here' + ', ' + 'Spare Part Available Stock Here'
@@ -225,19 +206,14 @@ def get_unit_stock(request):
 
 
 def product(request):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
     args = Product.objects.filter()
     maxProductNo = args.aggregate(Max('product_no')).get('product_no__max')
     if maxProductNo is None:
         maxProductNo = 1
     product_barcode_list = []
+    # list for all
     all = []
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i + 1).exists():
@@ -260,6 +236,7 @@ def product(request):
                 'parts_list': parts,
                 'status': product[0][5],
             }
+            # convert barcode using code39 and make it png image
             code39 = barcode.get('code39', product[0][1], writer=ImageWriter())
             code39.save('code39')
             with open("code39.png", "rb") as image_file:
@@ -271,7 +248,7 @@ def product(request):
             }
             product_barcode_list.append(barcode_dict)
             all.append(custom_dict)
-    print(product_barcode_list)
+    # list for open status
     open_status = []
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i + 1).exists():
@@ -296,7 +273,7 @@ def product(request):
                     'status': product[0][5],
                 }
                 open_status.append(custom_dict)
-
+    # list for in progress status
     in_progress = []
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i + 1).exists():
@@ -321,6 +298,7 @@ def product(request):
                     'status': product[0][5],
                 }
                 in_progress.append(custom_dict)
+    # list for aompleted status
     completed = []
     for i in range(maxProductNo):
         if Product.objects.filter(product_no=i + 1).exists():
@@ -357,14 +335,10 @@ def product(request):
 
 
 def create_product(request):
-    if 'user' not in request.session:
-        return redirect('login')
+    check_valid_user(request)
     user = request.session['user']
     auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    notification_list = get_header_notification_list(request)
     linked_content = []
     parts = SparePart.objects.all()
     for content in parts:
@@ -383,6 +357,7 @@ def create_product(request):
             while 1:
                 name = request.POST.get('name_' + str(count), '')
                 product_id = request.POST.get('product_id_' + str(count), '')
+                # if no id no data addition
                 if product_id is '':
                     print('empty')
                     count += 1
@@ -403,8 +378,6 @@ def create_product(request):
                 parts_box = request.POST.get('box_' + str(count), '')
                 parts_date = datetime.strptime(parts_date[2:], '%y-%m-%d').date()
                 quantity = request.POST.get('quantity_' + str(count), '')
-                print('*****', product_invoice, product_quantity)
-                print(partsname, parts_id, quantity)
                 if partsname != '' and parts_id != '' and quantity != '':
                     parts_id = int(parts_id)
                     quantity = int(quantity)
@@ -442,6 +415,7 @@ def create_product(request):
                     check = 0
                     count = 1
                     if flag:
+                        # send mail when product created
                         user = User.objects.all()
                         notify.send(auth_user, recipient=user, verb=f', create a product. product ID: {product_id}')
                         subject = 'New Product has been Created'
@@ -452,13 +426,12 @@ def create_product(request):
                         for item in email_object_list:
                             recipient_list.append(item.get('email_name'))
                         v = send_mail(subject, message, email_from, recipient_list)
-                        print('hit by product created')
+
                         return HttpResponse("Product Created")
                     flag = True
 
         except:
             print('error')
-            notify.send(auth_user, recipient=user, verb=f', create a product. product ID: {product_id},')
             return redirect(create_product)
 
     else:
@@ -467,12 +440,10 @@ def create_product(request):
 
 
 def change_product_status(request):
+    check_valid_user(request)
     user = request.session['user']
     auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    notification_list = get_header_notification_list(request)
     current = request.GET['current'].split(']')
     user = User.objects.all()
     product_id = current[0]
@@ -536,30 +507,27 @@ def change_product_status(request):
     return HttpResponse('Status Updated!')
 
 
+# to mark header unread noti. to read
 def mark_notification_read(request):
+    check_valid_user(request)
     user = request.session['user']
     auth_user = User.objects.get(username=user)
     qs = auth_user.notifications.unread()
     qs.mark_all_as_read(auth_user)
-    print('hit')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def product_tabel(request):
+    check_valid_user(request)
     return render(request, 'tables.html', {})
 
 
+# notification_list with color
 def all_notification(request):
-    if 'user' not in request.session:
-        return redirect('login')
+    check_valid_user(request)
     user = request.session['user']
     auth_user = User.objects.get(username=user)
-
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
-
+    notification_list = get_header_notification_list(request)
     all_notification_list = []
     notifications_unread = auth_user.notifications.unread()
     notifications_read = auth_user.notifications.read()
@@ -593,19 +561,13 @@ def all_notification(request):
             'style': style,
         })
 
-    print(all_notification_list)
     return render(request, 'notifications.html', {'notification': notification_list, 'data': all_notification_list})
 
 
+# email for notification
 def email_settings(request):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
     email = EmailSettings.objects.all()
     linked_content = []
     for content in email:
@@ -615,14 +577,8 @@ def email_settings(request):
 
 
 def add_email(request):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
     if request.POST:
         email = request.POST.get('name', '')
         print(email)
@@ -636,17 +592,14 @@ def add_email(request):
 
 
 def delete_email(request, id):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    if auth_user is None:
-        return redirect('login')
+    check_valid_user(request)
     EmailSettings.objects.filter(email_id=int(id)).delete()
     return redirect(email_settings)
 
 
+# email dropdown for notification
 def get_email_list(request):
+    check_valid_user(request)
     email = list(EmailSettings.objects.all().values_list('email_name'))
     email_str = ""
     for item in email:
@@ -655,7 +608,9 @@ def get_email_list(request):
     return HttpResponse(email_str[:-1])
 
 
+# email for product
 def email_sent(request):
+    check_valid_user(request)
     text = request.GET['text']
     receiver = request.GET['sender']
     receiver_list = []
@@ -668,14 +623,8 @@ def email_sent(request):
 
 
 def product_email_settings(request):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
     email = ProductEmailSettings.objects.all()
     linked_content = []
     for content in email:
@@ -693,14 +642,8 @@ def product_email_settings(request):
 
 
 def product_add_email(request):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    notification_list = []
-    notifications = auth_user.notifications.unread()
-    for item in list(notifications):
-        notification_list.append(str(item))
+    check_valid_user(request)
+    notification_list = get_header_notification_list(request)
     if request.POST:
         email = request.POST.get('name', '')
         print('asduba aibca uicbads c')
@@ -717,11 +660,6 @@ def product_add_email(request):
 
 
 def product_delete_email(request, id):
-    if 'user' not in request.session:
-        return redirect('login')
-    user = request.session['user']
-    auth_user = User.objects.get(username=user)
-    if auth_user is None:
-        return redirect('login')
+    check_valid_user(request)
     ProductEmailSettings.objects.filter(email_id=int(id)).delete()
     return redirect(product_email_settings)

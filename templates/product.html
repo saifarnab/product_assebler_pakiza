@@ -473,6 +473,9 @@
          })
 
     }
+    /****************************************
+         *       modal                 *
+         ****************************************/
     function myFunction(x, y) {
       document.getElementById('container').innerHTML = "";
       document.getElementById('response').innerHTML = "";
@@ -495,6 +498,9 @@
       document.getElementById("pass_val").value = mix;
 
 }
+/****************************************
+         *       hide and show table based on status                *
+         ****************************************/
 
 function show_all_prod (){
     document.getElementById("prod_all").style.display = "block";
@@ -522,6 +528,11 @@ function show_complete_prod (){
     document.getElementById("prod_progress").style.display = "none";
     document.getElementById("prod_complete").style.display = "block";
 }
+
+
+/****************************************
+         *      export pdf, excel, print                   *
+         ****************************************/
 
 function printDiv() {
  window.frames["print_frame"].document.body.innerHTML = document.getElementById("printableTable").innerHTML;
