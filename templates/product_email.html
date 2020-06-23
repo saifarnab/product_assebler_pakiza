@@ -181,12 +181,17 @@ body {
         </aside>
         <div class="page-wrapper">
             <div class="container-fluid">
-                <a href="{% url 'addemail' %}" style="margin-bottom: 15px; color:white;" class="btn btn-dark">Add Email</a>
+                {% if count == 0 %}
+                    <a href="{% url 'productaddemail' %}" style="margin-bottom: 15px; color:white;" class="btn btn-dark">Add Product Email</a>
+                {% endif %}
+                {% if count != 0 %}
+                    <button href="{% url 'productaddemail' %}" style="margin-bottom: 15px; color:white;" class="btn btn-dark" disabled>Add Product Email</button>
+                {% endif %}
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Units:</h5>
+                                <h5 class="card-title">Product Email:</h5>
                                 <div class="table-responsive">
                                     <table id="zero_config" class="table table-striped table-bordered">
                                         <thead>
@@ -204,7 +209,7 @@ body {
                                                 <td> {{ item.email_name }} </td>
                                                 <td> {{ item.created_at }} </td>
                                                 <td>
-                                                    <a href="{% url 'deleteemail' item.email_id %}" class="btn btn-sm btn-danger">Delete</a>
+                                                    <a href="{% url 'deleteproductemail' item.email_id %}" class="btn btn-sm btn-danger">Delete</a>
                                                 </td>
                                             </tr>
                                         {% endfor %}

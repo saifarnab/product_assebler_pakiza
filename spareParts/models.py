@@ -61,3 +61,10 @@ class EmailSettings(models.Model):
     email_name = models.CharField(max_length=288, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class ProductEmailSettings(models.Model):
+    email_id = models.BigAutoField(primary_key=True)
+    email_name = models.CharField(max_length=288, null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

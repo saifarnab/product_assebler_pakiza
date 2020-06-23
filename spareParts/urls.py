@@ -25,5 +25,8 @@ urlpatterns = [
     path(r'^deleteemail/<int:id>/', views.delete_email, name='deleteemail'),
     path(r'^emaillist/$', views.get_email_list, name='emaillist'),
     path(r'^emailsent/$', views.email_sent, name='emailsent'),
+    path('productemail', views.product_email_settings, name='productemail'),
+    path('productaddemail', views.product_add_email, name='productaddemail'),
+    path(r'^deleteproductemail/<int:id>/', views.product_delete_email, name='deleteproductemail'),
 ]
 

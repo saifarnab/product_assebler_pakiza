@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SparePart, Unit, Purchase, Product, EmailSettings
+from .models import SparePart, Unit, Purchase, Product, EmailSettings, ProductEmailSettings
 # Register your models here.
 
 
@@ -34,8 +34,15 @@ class EmailAdmin(admin.ModelAdmin):
     ]
 
 
+class ProductEmailAdmin(admin.ModelAdmin):
+    list_display = [
+        'email_id', 'email_name', 'created_at', 'updated_at'
+    ]
+
+
 admin.site.register(SparePart, SparePartAdmin)
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(Purchase, PurchaseAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(EmailSettings, EmailAdmin)
+admin.site.register(ProductEmailSettings, ProductEmailAdmin)

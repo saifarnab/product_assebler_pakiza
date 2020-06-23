@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import SparePart, Unit, Purchase, Product, EmailSettings
+from .models import SparePart, Unit, Purchase, Product, EmailSettings, ProductEmailSettings
 from django.urls import reverse
 from django.contrib.auth import logout
 from django.db.models import Max
@@ -406,7 +406,6 @@ def create_product(request):
                 print('*****', product_invoice, product_quantity)
                 print(partsname, parts_id, quantity)
                 if partsname != '' and parts_id != '' and quantity != '':
-
                     parts_id = int(parts_id)
                     quantity = int(quantity)
                     qry = SparePart.objects.filter(parts_id=parts_id).values_list('quantity')
@@ -448,7 +447,7 @@ def create_product(request):
                         subject = 'New Product has been Created'
                         message = f'Product ID: {product_id}'
                         email_from = settings.EMAIL_HOST_USER
-                        email_object_list = list(EmailSettings.objects.all().values('email_name'))
+                        email_object_list = list(ProductEmailSettings.objects.all().values('email_name'))
                         recipient_list = []
                         for item in email_object_list:
                             recipient_list.append(item.get('email_name'))
@@ -666,3 +665,63 @@ def email_sent(request):
     email_from = settings.EMAIL_HOST_USER
     v = send_mail(subject, str(text), email_from, receiver_list)
     return HttpResponse('ok')
+
+
+def product_email_settings(request):
+    if 'user' not in request.session:
+        return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
+    notification_list = []
+    notifications = auth_user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
+    email = ProductEmailSettings.objects.all()
+    linked_content = []
+    for content in email:
+        linked_content.append(content.__dict__)
+    count = 0
+    if len(linked_content) > 0:
+        count = 1
+    print(count)
+    return render(request, 'product_email.html',
+                  {'notification': notification_list,
+                   'data': linked_content,
+                   'user': request.session['user'],
+                   'count': count
+                   })
+
+
+def product_add_email(request):
+    if 'user' not in request.session:
+        return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
+    notification_list = []
+    notifications = auth_user.notifications.unread()
+    for item in list(notifications):
+        notification_list.append(str(item))
+    if request.POST:
+        email = request.POST.get('name', '')
+        print('asduba aibca uicbads c')
+        print(email)
+        print('asduba aibca uicbads c')
+        if email != '':
+            if ProductEmailSettings.objects.filter(email_name=email).exists():
+                print('djfbsdhkbvsdjhkbvk')
+                return render(request, 'add_product_email.html',
+                              {'user': request.session['user'], 'message': f"'{email}' already exists"})
+            ProductEmailSettings.objects.create(email_name=email)
+            return redirect(product_email_settings)
+    return render(request, 'add_product_email.html', {'notification': notification_list, 'user': request.session['user']})
+
+
+def product_delete_email(request, id):
+    if 'user' not in request.session:
+        return redirect('login')
+    user = request.session['user']
+    auth_user = User.objects.get(username=user)
+    if auth_user is None:
+        return redirect('login')
+    ProductEmailSettings.objects.filter(email_id=int(id)).delete()
+    return redirect(product_email_settings)
