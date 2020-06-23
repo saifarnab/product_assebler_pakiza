@@ -139,7 +139,12 @@
                <nav class="sidebar-nav">
                    <ul id="sidebarnav" class="p-t-30">
                        <li class="sidebar-item"><a href="{% url 'unittable' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Units </span></a></li>
-                       <li class="sidebar-item"><a href="{% url 'email' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Email Settings </span></a></li>
+                       <li class="sidebar-item"> <a style="background:none" class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-receipt"></i><span class="hide-menu">Email Settings </span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+                               <li class="sidebar-item"><a href="{% url 'email' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Notification Email </span></a></li>
+                               <li class="sidebar-item"><a href="{% url 'productemail' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Product Email </span></a></li>
+                            </ul>
+                        </li>
                        <li class="sidebar-item"><a href="{% url 'spareparts' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Spare Parts </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'purchases' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Purchases </span></a></li>
                        <li class="sidebar-item"><a href="{% url 'product' %}" style="background:none;" class="sidebar-link"><i class="mdi mdi-note-outline"></i><span class="hide-menu"> Products </span></a></li>
